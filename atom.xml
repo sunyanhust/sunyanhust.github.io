@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://sunyanhust.github.io</id>
     <title>Gridea</title>
-    <updated>2020-03-07T13:58:06.413Z</updated>
+    <updated>2020-03-07T14:19:03.366Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://sunyanhust.github.io"/>
     <link rel="self" href="https://sunyanhust.github.io/atom.xml"/>
@@ -217,7 +217,13 @@ Boosting：每一轮根据上一轮的分类结果动态调整每个样本在分
 </ol>
 <h2 id="计算机网络">计算机网络</h2>
 <ol>
-<li>TCP和UDP的区别；</li>
+<li>TCP和UDP的区别<br>
+1、TCP面向连接（如打电话要先拨号建立连接）;UDP是无连接的，即发送数据之前不需要建立连接<br>
+2、TCP提供可靠的服务。也就是说，通过TCP连接传送的数据，无差错，不丢失，不重复，且按序到达;UDP尽最大努力交付，即不保证可靠交付<br>
+3、TCP面向字节流，实际上是TCP把数据看成一连串无结构的字节流;UDP是面向报文的UDP没有拥塞控制，因此网络出现拥塞不会使源主机的发送速率降低（对实时应用很有用，如IP电话，实时视频会议等<br>
+4、每一条TCP连接只能是点到点的;UDP支持一对一，一对多，多对一和多对多的交互通信<br>
+5、TCP首部开销20字节;UDP的首部开销小，只有8个字节<br>
+6、TCP的逻辑通信信道是全双工的可靠信道，UDP则是不可靠信道</li>
 <li>线程和进程的区别，如何实现多线程；</li>
 <li>L1范数能否去除冗余特征</li>
 <li>没坐标怎么做kmeans</li>
@@ -250,7 +256,17 @@ Boosting：每一轮根据上一轮的分类结果动态调整每个样本在分
 </ol>
 <h2 id="python">Python</h2>
 <ol>
-<li>Python的装饰器, 迭代器和生成器</li>
+<li>Python的装饰器, 迭代器和生成器<br>
+装饰器的功能：在不修改原函数及其调用方式的情况下对原函数功能进行扩展<br>
+装饰器的本质：就是一个闭包函数<br>
+迭代器就是用于迭代操作的的对象，遵从迭代协议（内部实现了__iter__()和__next__()方法，可以像列表（可迭代对象，只有__iter__()方法）一样迭代获取其中的值，与列表不同的是，构建迭代器的时候，不像列表一样一次性把数据加到内存，而是以一种延迟计算的方式返回元素，即调用next方法时候返回此值。<br>
+生成器本质上也是一个迭代器，自己实现了可迭代协议，与迭代器器不同的是生成器的实现方式不同，可以通过生成器表达式和生成器函数两种方式实现，代码更简洁。生成器和迭代器都是惰性可迭代对象，只能遍历一次，数据取完抛出Stopiteration异常<pre><code class="language-python">#生成器函数（带yield语句）
+def gen():
+    yield 3
+#生成器表达式（类似列表推导式）
+gen=(x for x in range(1,5))
+</code></pre>
+</li>
 <li>lambda函数</li>
 <li>Python回调</li>
 <li>python中函数self的区别，读取一个txt文件中2.5是什么数据类型，2.5+2.5等于多少</li>
