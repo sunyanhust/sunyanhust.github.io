@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://sunyanhust.github.io</id>
     <title>Gridea</title>
-    <updated>2020-03-05T11:28:27.571Z</updated>
+    <updated>2020-03-07T05:17:05.077Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://sunyanhust.github.io"/>
     <link rel="self" href="https://sunyanhust.github.io/atom.xml"/>
@@ -10,6 +10,181 @@
     <logo>https://sunyanhust.github.io/images/avatar.png</logo>
     <icon>https://sunyanhust.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Gridea</rights>
+    <entry>
+        <title type="html"><![CDATA[NLP面试]]></title>
+        <id>https://sunyanhust.github.io/post/nlp-mian-shi/</id>
+        <link href="https://sunyanhust.github.io/post/nlp-mian-shi/">
+        </link>
+        <updated>2020-03-07T04:14:52.000Z</updated>
+        <content type="html"><![CDATA[<p>1.怎么判断过拟合， 过拟合如何处理<br>
+2. L1和L2正则化的区别<br>
+3. 什么样的情况容易过拟合<br>
+4. 除了dropout和正则化还有什么方法可以处理过拟合（降低网络复杂度）<br>
+5. word2vec如何实现，实现方法有什么区别<br>
+6. 基于业务的问答系统如何设计<br>
+7. 如何训练基于知识图谱的问答系统<br>
+8. 在训练KBQA时会用到例如freebase这样的开源知识图谱，他们过大的体积在训练中要如何进行优化<br>
+9. 基于匹配的问答系统的关键技术是什么（文本相似度匹配）<br>
+10. 文本相似度匹配有哪些实现方法（转特征求距离，或者使用自然语言推理的模型）<br>
+11. 开放式的对话系统如何训练<br>
+12. transformer和RNN的区别<br>
+13. 推荐系统了解吗，有那两部分（召回和排序）<br>
+14. 怎么抓取热门<br>
+15. 召回有哪些（微博召回怎么做），排序算法了解吗<br>
+16. 小样本数据集怎么做<br>
+17. 样本不均衡怎么搞（重点考核损失函数优化）<br>
+18. AUC的具体含义<br>
+19. 介绍推荐系统的召回和排序系统，召回系统的输出是什么<br>
+20. RF和GBDT介绍、RF的属性采样时有放回还是不放回<br>
+21. 手写LSTM的公式（手画LSTM图）<br>
+22. lightgbm对缺失值的处理方法<br>
+23. kmeans的K值确定方法<br>
+24. FM（factorization machine）模型的公式写一下，模型解决了什么问题<br>
+25. DIN（deep interest network）主要使用了什么机制，解释一下，画一下DIN的框图<br>
+26. DIN的activation unit的作用<br>
+27. 一个模型的bais和variance的具体定义是什么，bais和variance哪个比较重要，为什么是trade-off<br>
+28. 泛化误差解释（bais^2+variance+noise）<br>
+29. dropout的工作机制，dropout在训练过程如何使用<br>
+30. 聚类算法了解程度、kmeans介绍、K值选择、kmeans++算法)<br>
+31. 推荐系统还有融合框架，假如通过两种不同的召回和ranking系统得到结果，如何在两种备选结果中最终给用户推荐出最适合的十个广告<br>
+32. XGBOOST ，LGB，GBDT 的区别<br>
+33. 一阶优化器，二阶优化器<br>
+34. Attention怎么做，self-attention怎么做<br>
+35.  Transformer细节，Bert细节（多头和缩放）<br>
+36.  标签平滑怎么做的<br>
+37.  交叉熵，相对熵<br>
+38.   Bagging, boosting , 偏差，方差关系<br>
+39.   CRF理论与代码实现细节, CRF与HMM关系，区别<br>
+40.   维特比，beam-search 时间复杂度，区别<br>
+41.   XGBOOST ，LGB 生长策略，分类策略<br>
+42.   少样本情况怎么缓解<br>
+43.   实际场景做softmax很容易出现下溢问题, 怎么解决<br>
+可以用每个维度减去一个固定值</p>
+<ol start="44">
+<li>正则项为什么能减缓过拟合</li>
+<li>过拟合解决方法，正则项为什么能减缓过拟合, 权重衰减等价于哪个正则项</li>
+<li>随机森林的随机体现在哪里</li>
+<li>tm和rnn的区别</li>
+<li>LR和svm的区别是什么</li>
+<li>lstm的优点，记忆单元是怎么工作的，他为什么可以克服梯度消失</li>
+<li>bp的原理</li>
+<li>bn的原理</li>
+<li>解释一下AUC的计算方法和它代表的意义。问了一个相关的问题，当时没有答的很好，就是一个数据如果分成两份，分别在两份数据上计算出AUC为AUC_1和AUC_2，问整体数据的AUC是多少？面试的时候一直以为这个是能算出来的，所以一直在推导公式。最后的答案其实是无法得到，因为从局部的有序无法直接退出全局的有序，这个题目其实还是考查对于AUC这个指标的理解深度。</li>
+<li>word2vec的两种优化方法，说下分层softmax是怎么做的。word2vec的优点和缺点，是如何解决oov的问题的，实际上word2vec如何使用</li>
+<li>lucene搜索</li>
+<li>关键字搜索如何实现</li>
+<li>单元测试。</li>
+<li>深度优先和广度优先的本质区别。</li>
+<li>从搜谷歌到返回页面，发生了什么。</li>
+<li>batchsize大或小有什么问题, LR怎么设置</li>
+</ol>
+<h2 id="计算机网络">计算机网络</h2>
+<ol>
+<li>TCP和UDP的区别；</li>
+<li>线程和进程的区别，如何实现多线程；</li>
+<li>L1范数能否去除冗余特征</li>
+<li>没坐标怎么做kmeans</li>
+<li>决策树的特征和神经网络特征有什么差异</li>
+<li>句子向量有哪些生成方式</li>
+<li>词袋模型有哪些不足的地方<br>
+稀疏，无序，纬度爆炸, 每个词都是正交的，相当于每个词都没有关系。</li>
+<li>albert相对于bert的改进</li>
+<li>稀疏词向量 用skip-gram还是cbow训练好</li>
+<li>word2vec  两种训练方式哪种更好？对生僻词谁更好？</li>
+<li>在工程中什么样的结果会表明是over fitting/under fitting</li>
+<li>对于CNN 卷积层、和池化层的物理意义是什么, 对于池化的max方法和mean方法 分别适合针对什么情况下应用？<br>
+当feature map中的信息都具有一定贡献的时候使用AvgPooling，比如网络走到比较深的地方，这个时候特征图的H W都比较小，包含的语义信息较多，这个时候再使用MaxPooling就不太合适了.反之为了减少无用信息的影响时用maxpool，比如网络浅层常常见到maxpool，因为开始几层对图像而言包含较多的无关信息。二者的具体使用场景只有在具体任务上观察，实际效果炼丹后才知道。</li>
+<li>L2正则化的penalize term和先验有关系嘛？如有是什么样的关系</li>
+<li>树模型怎么剪枝？如何处理缺失值？</li>
+<li>讲讲Glove的原理，它和Word2vec有什么区别？Fasttext说一下</li>
+<li>画一下ELMo的模型图，讲一下ELMo的原理，为什么它能解决词歧义的问题？</li>
+<li>画Bert的模型图，讲原理，预训练的过程。Bert输入是由哪些组成的？Bert相比于ELMo有什么优点？它是怎么用作下游任务的？</li>
+<li>Attention机制的原理，常用的Attention计算相似度方式有哪些，写一下公式。</li>
+<li>有分布式训练神经网络的经验吗？多卡跑模型的命令是什么</li>
+<li>简述一种中文分词算法。</li>
+<li>讲一下Hessian矩阵？ Hessian矩阵是对称矩阵吗？</li>
+<li>SVM的优化函数讲一下？</li>
+<li>聚类算法了解吗？DBSCAN讲一下</li>
+</ol>
+<h2 id="机器学习">机器学习</h2>
+<ol>
+<li>Xgboost的原理介绍以及如何并行化实现</li>
+<li>生成模型和判别模型（SVM、LR属于哪种）</li>
+</ol>
+<h2 id="python">Python</h2>
+<ol>
+<li>Python的装饰器, 迭代器和生成器</li>
+<li>lambda函数</li>
+<li>Python回调</li>
+<li>python中函数self的区别，读取一个txt文件中2.5是什么数据类型，2.5+2.5等于多少</li>
+<li>深拷贝和浅拷贝的区别</li>
+<li>线程进程, python内部实现的多线程有什么问题</li>
+<li>python2python3map的差别</li>
+<li>Python不可变数据类型有哪些？</li>
+</ol>
+<h2 id="linux基础">Linux基础</h2>
+<ol start="9">
+<li>AWK</li>
+<li>nohup</li>
+</ol>
+<p>##代码</p>
+<ol>
+<li>最长回文子串</li>
+<li>给你10亿数据，不重复，求前k大。（n为10亿，k为2亿）</li>
+<li>给你1000个数组，求最长的等差数列</li>
+<li>TopK（快排和小顶堆分别实现，分析时间和空间复杂度）</li>
+<li>分析插入和快排的时间和空间复杂度，稳定，不稳定？稳定排序和不稳定排序算法的定义？手写快排</li>
+<li>LR的随机梯度实现</li>
+<li>数组的最大和，数组的最大乘积</li>
+<li>数组排成最大的数字</li>
+<li>数据中出现空值处理的方法</li>
+<li>给定一个矩阵，在矩阵中选取一行，求取某一行某个数附近的5个数的值，需要用哪种数据结构（KD树）</li>
+<li>二叉树的最短路径</li>
+<li>给定10G的文件，只有2G的内存，如何将文件放到内存中</li>
+<li>编辑距离</li>
+<li>完全二叉树的节点个数</li>
+<li>二叉树的前序遍历的递归和非递归、时间复杂度</li>
+<li>15分钟 写一个k-means，没写完时间不够</li>
+<li>打家劫舍II</li>
+<li>反转链表</li>
+<li>用神经网络搭建一个LR</li>
+<li>如果有很大的文件，怎么统计文件里面出现的各个单词的数量</li>
+<li>用两个栈实现一个队列</li>
+<li>o(n)实现三色排序</li>
+<li>有一个城市名称列表，如何判断语句中是否出现了列表中的城市(KMP)</li>
+<li>手写tfidf</li>
+<li>二叉树层次遍历</li>
+<li>大数加法 大数相乘</li>
+<li>二叉树之子型遍历，每行打印</li>
+<li>数组，可以分别从最左边最右边取个数字，求取得k个数的最大值，O（1）空间呢，k的取值范围的条件</li>
+<li>k个的列表反转</li>
+<li>对称二叉树</li>
+<li>连续数组，给定k，求连续数组最小区间。动态规划要优化时间，贪心法需要证明。</li>
+<li>圆上三点组成锐角三角形概率</li>
+<li>cnn的卷积计算，参数计算。</li>
+<li>倒水问题</li>
+<li>最长公共子序列</li>
+<li>最大上升子序列</li>
+<li>旋转数组找K值</li>
+<li>蓄水池抽样算法（Reservoir Sampling）</li>
+<li>跳台阶+有一次后退机会</li>
+<li>排序二叉树 插入新数字</li>
+<li>归并排序中的归并</li>
+<li>给定一个int数组，求数组中能组成三角形的个数。</li>
+<li>数组中索引K前面是有序的，K之后也是有序的，调整使得整个数组有序，要求空间复杂度O(1)</li>
+<li>有1,2,5,10,20,50的纸币，求凑到100元一共有多少种方法</li>
+<li>合并两个有序链表，合并K个有序链表</li>
+<li>顺时针打印矩阵</li>
+</ol>
+<h2 id="智力题">智力题</h2>
+<ol>
+<li>2个蜡烛1个小时，如何记录15分钟</li>
+<li>只有01生成器，如何生成 0-3等概率，如何生成 0-k等概率（模拟二进制）</li>
+<li>ABCD乘以9等于DCBA，那么ABCD各等于几？</li>
+</ol>
+<p>反转链表</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[NLP常用模型和数据集高速下载]]></title>
         <id>https://sunyanhust.github.io/post/nlp-chang-yong-mo-xing-he-shu-ju-ji-gao-su-xia-zai/</id>
