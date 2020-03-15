@@ -2,25 +2,25 @@
   <head>
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>关于 | Gridea</title>
+<title>华为面试 | Gridea</title>
 <link rel="shortcut icon" href="https://sunyanhust.github.io/favicon.ico?v=1584241185652">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://sunyanhust.github.io/styles/main.css">
-<link rel="alternate" type="application/atom+xml" title="关于 | Gridea - Atom Feed" href="https://sunyanhust.github.io/atom.xml">
+<link rel="alternate" type="application/atom+xml" title="华为面试 | Gridea - Atom Feed" href="https://sunyanhust.github.io/atom.xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
 
 
 
     <meta name="description" content="
-欢迎来到我的小站呀，很高兴遇见你！🤝
 
-🏠 关于本站
-主要是平时的技术笔记，督促自己学习、记录和分享！
-👨‍💻 博主是谁
-来自新屋熊大学，目前主攻方向为自然语言处理。
-⛹ 兴趣爱好
-读书，看电影，听歌，写博客， 旅游
-📬 联系我..." />
+def eval(input_str):
+    op1 = ('+','-')
+    op2 = ('*','/')
+    
+    temp = []
+    result = 0
+    num = &quot;&quot;
+..." />
     <meta name="keywords" content="" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
     <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
@@ -91,50 +91,101 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              关于
+              华为面试
             </h2>
             <div class="post-info">
               <span>
-                2019-01-25
+                2020-03-09
               </span>
               <span>
-                1 min read
+                2 min read
               </span>
               
             </div>
             
             <div class="post-content-wrapper">
               <div class="post-content">
-                <blockquote>
-<p>欢迎来到我的小站呀，很高兴遇见你！🤝</p>
-</blockquote>
-<h2 id="关于本站">🏠 关于本站</h2>
-<p>主要是平时的技术笔记，督促自己学习、记录和分享！</p>
-<h2 id="博主是谁">👨‍💻 博主是谁</h2>
-<p>来自新屋熊大学，目前主攻方向为自然语言处理。</p>
-<h2 id="兴趣爱好">⛹ 兴趣爱好</h2>
-<p>读书，看电影，听歌，写博客， 旅游</p>
-<h2 id="联系我呀">📬 联系我呀</h2>
-<p>sunyanhust AT 163.com</p>
+                <pre><code class="language-python">
+</code></pre>
+<pre><code class="language-python">def eval(input_str):
+    op1 = ('+','-')
+    op2 = ('*','/')
+    
+    temp = []
+    result = 0
+    num = &quot;&quot;
+    for s in input_str:
+        if s not in op1 and s not in op2:
+           num = num + s
+        else:
+            temp.append(int(num))
+            temp.append(s)
+            num = &quot;&quot;
+    temp.append(int(num))
+
+    print(temp)
+
+    run = False
+    temp1 = []
+    for i, d in enumerate(temp):
+        if run:
+            run = False
+            continue
+        if d not in op2:
+           temp1.append(d)
+        else:
+            if d == '*':
+                r = temp1[-1] * temp[i+1]
+            else:
+                r = int(temp1[-1] / temp[i+1])
+            temp1.pop()
+            temp1.append(r)
+            run = True
+    print(temp1)
+
+    run = False
+    temp2 = []
+    for i, d in enumerate(temp1):
+        if run:
+            run = False
+            continue
+        if d not in op1:
+           temp2.append(d)
+        else:
+            if d == '+':
+                r = temp2[-1] + temp1[i+1]
+            else:
+                r = temp2[-1] - temp1[i+1]
+            temp2.pop()
+            temp2.append(r)
+            run = True
+    print(temp2)
+
+    result = temp2[0]
+    return result
+
+if __name__ == &quot;__main__&quot;:
+    str = &quot;10+5*3/2-7*2+1&quot;
+    print(eval(str))
+</code></pre>
 
               </div>
               <div class="toc-container">
-                <ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#%E5%85%B3%E4%BA%8E%E6%9C%AC%E7%AB%99">🏠 关于本站</a></li>
-<li><a href="#%E5%8D%9A%E4%B8%BB%E6%98%AF%E8%B0%81">👨‍💻 博主是谁</a></li>
-<li><a href="#%E5%85%B4%E8%B6%A3%E7%88%B1%E5%A5%BD">⛹ 兴趣爱好</a></li>
-<li><a href="#%E8%81%94%E7%B3%BB%E6%88%91%E5%91%80">📬 联系我呀</a></li>
-</ul>
-</li>
-</ul>
-
+                
               </div>
             </div>
           </article>
         </div>
 
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://sunyanhust.github.io/post/nlp-mian-shi/">
+              <h3 class="post-title">
+                NLP面试
+              </h3>
+            </a>
+          </div>
         
 
         

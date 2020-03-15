@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://sunyanhust.github.io</id>
     <title>Gridea</title>
-    <updated>2020-03-07T14:19:03.366Z</updated>
+    <updated>2020-03-15T02:59:49.537Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://sunyanhust.github.io"/>
     <link rel="self" href="https://sunyanhust.github.io/atom.xml"/>
@@ -10,6 +10,77 @@
     <logo>https://sunyanhust.github.io/images/avatar.png</logo>
     <icon>https://sunyanhust.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Gridea</rights>
+    <entry>
+        <title type="html"><![CDATA[华为面试]]></title>
+        <id>https://sunyanhust.github.io/post/hua-wei-mian-shi/</id>
+        <link href="https://sunyanhust.github.io/post/hua-wei-mian-shi/">
+        </link>
+        <updated>2020-03-09T13:28:53.000Z</updated>
+        <content type="html"><![CDATA[<pre><code class="language-python">
+</code></pre>
+<pre><code class="language-python">def eval(input_str):
+    op1 = ('+','-')
+    op2 = ('*','/')
+    
+    temp = []
+    result = 0
+    num = &quot;&quot;
+    for s in input_str:
+        if s not in op1 and s not in op2:
+           num = num + s
+        else:
+            temp.append(int(num))
+            temp.append(s)
+            num = &quot;&quot;
+    temp.append(int(num))
+
+    print(temp)
+
+    run = False
+    temp1 = []
+    for i, d in enumerate(temp):
+        if run:
+            run = False
+            continue
+        if d not in op2:
+           temp1.append(d)
+        else:
+            if d == '*':
+                r = temp1[-1] * temp[i+1]
+            else:
+                r = int(temp1[-1] / temp[i+1])
+            temp1.pop()
+            temp1.append(r)
+            run = True
+    print(temp1)
+
+    run = False
+    temp2 = []
+    for i, d in enumerate(temp1):
+        if run:
+            run = False
+            continue
+        if d not in op1:
+           temp2.append(d)
+        else:
+            if d == '+':
+                r = temp2[-1] + temp1[i+1]
+            else:
+                r = temp2[-1] - temp1[i+1]
+            temp2.pop()
+            temp2.append(r)
+            run = True
+    print(temp2)
+
+    result = temp2[0]
+    return result
+
+if __name__ == &quot;__main__&quot;:
+    str = &quot;10+5*3/2-7*2+1&quot;
+    print(eval(str))
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[NLP面试]]></title>
         <id>https://sunyanhust.github.io/post/nlp-mian-shi/</id>
@@ -267,16 +338,21 @@ def gen():
 gen=(x for x in range(1,5))
 </code></pre>
 </li>
-<li>lambda函数</li>
+<li>Python中的Lambda函数</li>
 <li>Python回调</li>
 <li>python中函数self的区别，读取一个txt文件中2.5是什么数据类型，2.5+2.5等于多少</li>
 <li>深拷贝和浅拷贝的区别</li>
-<li>线程进程, python内部实现的多线程有什么问题</li>
-<li>python2python3map的差别</li>
-<li>Python不可变数据类型有哪些？</li>
+<li>线程进程的区别, python内部实现的多线程有什么问题</li>
+<li>Python2和Python3 map的差别<br>
+Python3 map函数返回一个迭代器, Python2中返回一个列表。</li>
+<li>Python可变数据类型和不可变数据类型分别有哪些？<br>
+可变数据类型：列表list和字典dict。<br>
+不可变数据类型：整型int、浮点型float、字符串型string和元组tuple。</li>
+<li>Python是如何进行内存管理的<br>
+Python采用的是基于值的内存管理方式，如果为不同变量赋值相同值，则在内存中只有一份该值，多个变量指向同一块内存地址</li>
 </ol>
 <h2 id="linux基础">Linux基础</h2>
-<ol start="9">
+<ol>
 <li>AWK</li>
 <li>nohup</li>
 </ol>
