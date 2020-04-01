@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://sunyanhust.github.io</id>
     <title>Gridea</title>
-    <updated>2020-03-15T02:59:49.537Z</updated>
+    <updated>2020-04-01T12:57:48.173Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://sunyanhust.github.io"/>
     <link rel="self" href="https://sunyanhust.github.io/atom.xml"/>
@@ -10,6 +10,22 @@
     <logo>https://sunyanhust.github.io/images/avatar.png</logo>
     <icon>https://sunyanhust.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Gridea</rights>
+    <entry>
+        <title type="html"><![CDATA[服务器使用screen后台运行程序]]></title>
+        <id>https://sunyanhust.github.io/post/fu-wu-qi-shi-yong-screen-hou-tai-yun-xing-cheng-xu/</id>
+        <link href="https://sunyanhust.github.io/post/fu-wu-qi-shi-yong-screen-hou-tai-yun-xing-cheng-xu/">
+        </link>
+        <updated>2020-04-01T12:49:31.000Z</updated>
+        <content type="html"><![CDATA[<ol>
+<li>安装screen：<code>yum install -y screen</code></li>
+<li>确认远程服务器是否安装screen：screen -v</li>
+<li>启动screen 会话：<code>screen -S train</code>，会话名字为train。这个时候会切换到新的会话终端，在里面运行我们想要的程序。</li>
+<li>切换返回： <code>ctrl+a+d</code></li>
+<li>查看运行中的screen会话：<code>screen -ls</code></li>
+<li>看到对应的id后，重新登录会话,，这里假设id为774：<code>screen -r 774</code>，如果登录不上，使用<code>screen -D -r 774</code> 先踢掉前一用户，再登陆。</li>
+</ol>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[华为面试]]></title>
         <id>https://sunyanhust.github.io/post/hua-wei-mian-shi/</id>
