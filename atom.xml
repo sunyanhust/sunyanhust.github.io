@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://sunyanhust.github.io</id>
     <title>Gridea</title>
-    <updated>2020-04-01T12:57:48.173Z</updated>
+    <updated>2020-04-02T04:19:39.288Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://sunyanhust.github.io"/>
     <link rel="self" href="https://sunyanhust.github.io/atom.xml"/>
@@ -10,6 +10,61 @@
     <logo>https://sunyanhust.github.io/images/avatar.png</logo>
     <icon>https://sunyanhust.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Gridea</rights>
+    <entry>
+        <title type="html"><![CDATA[Keras指定显卡并限制显存使用（tensorflow后端）]]></title>
+        <id>https://sunyanhust.github.io/post/keras-zhi-ding-xian-qia-bing-xian-zhi-xian-cun-shi-yong-tensorflow-hou-duan/</id>
+        <link href="https://sunyanhust.github.io/post/keras-zhi-ding-xian-qia-bing-xian-zhi-xian-cun-shi-yong-tensorflow-hou-duan/">
+        </link>
+        <updated>2020-04-02T04:08:55.000Z</updated>
+        <content type="html"><![CDATA[<blockquote>
+<p>本文转载自<a href="https://zhuanlan.zhihu.com/p/65218239">知乎</a></p>
+</blockquote>
+<p>Keras使用显卡时是默认调用所有的GPU，并且占满所有显存的，所以就很有必要搞清楚Keras如何指定GPU和如何限制显存的使用比例了。</p>
+<h2 id="指定某块gpu">📒指定某块GPU</h2>
+<p>指定GPU很简单，在载入keras和tensorflow之前，设置CUDA计算使用的GPU序号即可。这其实是CUDA本身的参数，对所有深度学习框架都是适用的。需要注意的是最好写在<code>improt keres</code> 和 <code>import tensorflow</code>之前，不然可能出错。</p>
+<pre><code class="language-python">import os
+os.environ[&quot;CUDA_VISIBLE_DEVICES&quot;] = &quot;1&quot;
+</code></pre>
+<p>此代码选择的是编号为“1”的显卡。显卡的编号是从“0”开始的，若只有一块显卡则编号为“0”。</p>
+<h2 id="指定多块gpu">📒指定多块GPU</h2>
+<p>指定多块GPU的方式和前文完全一致，只需要多写几个编号即可：</p>
+<pre><code class="language-python">import os
+os.environ[&quot;CUDA_VISIBLE_DEVICES&quot;] =  &quot;0, 2&quot;
+</code></pre>
+<p>此时选择的是编号为“0”和编号为“2”的显卡</p>
+<h2 id="控制gpu显存使用比例">📒控制GPU显存使用比例</h2>
+<p>Keras是默认占满GPU显存的，我们通过重设backend的gpu_memory_fraction来进行调节，0.3表示占用30%的显存：</p>
+<pre><code class="language-python">import tensorflow as tf
+from keras.backend.tensorflow_backend import set_session
+config = tf.ConfigProto()
+config.gpu_options.per_process_gpu_memory_fraction = 0.3
+set_session(tf.Session(config=config))
+</code></pre>
+<p>不过虽然配置了GPU显存的占用比例，实际运行中若不够用的话还是获取更多的显存。比方说如果运行了3个设置为30%显存的应用，实际上是可能超过100%造成显存不足的。</p>
+<h2 id="指定gpu控制显存使用">📒指定GPU+控制显存使用</h2>
+<p>将指定GPU与控制显存使用比例合并操作即可：</p>
+<pre><code class="language-python">import os
+os.environ[&quot;CUDA_VISIBLE_DEVICES&quot;] = &quot;1&quot;
+import tensorflow as tf
+from keras.backend.tensorflow_backend import set_session
+config = tf.ConfigProto()
+config.gpu_options.per_process_gpu_memory_fraction = 0.3
+set_session(tf.Session(config=config))
+</code></pre>
+<p>该代码实现的是指定编号为“1”的GPU，并设置占用显存的比例为30%。</p>
+<h2 id="显存的按需分配动态增长">📒显存的按需分配（动态增长）</h2>
+<p>如果并不清楚自己的应用分配多少的显存比例合适，可以使用按需分配的方式，也就是动态增长allow_growth：</p>
+<pre><code class="language-python">import os
+os.environ[&quot;CUDA_VISIBLE_DEVICES&quot;] = &quot;1&quot;
+import tensorflow as tf
+from keras.backend.tensorflow_backend import set_session
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True
+set_session(tf.Session(config=config))
+</code></pre>
+<p>该代码实现的是指定编号为“1”的GPU，并设置占用显存的方式为按需增长。</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[服务器使用screen后台运行程序]]></title>
         <id>https://sunyanhust.github.io/post/fu-wu-qi-shi-yong-screen-hou-tai-yun-xing-cheng-xu/</id>

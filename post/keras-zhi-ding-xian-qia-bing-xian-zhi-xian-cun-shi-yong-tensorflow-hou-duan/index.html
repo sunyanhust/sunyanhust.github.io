@@ -1,0 +1,235 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Keras指定显卡并限制显存使用（tensorflow后端） | Gridea</title>
+<link rel="shortcut icon" href="https://sunyanhust.github.io/favicon.ico?v=1585801174500">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://sunyanhust.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Keras指定显卡并限制显存使用（tensorflow后端） | Gridea - Atom Feed" href="https://sunyanhust.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="
+本文转载自知乎
+
+Keras使用显卡时是默认调用所有的GPU，并且占满所有显存的，所以就很有必要搞清楚Keras如何指定GPU和如何限制显存的使用比例了。
+📒指定某块GPU
+指定GPU很简单，在载入keras和tensorflow之前，..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://sunyanhust.github.io">
+  <img class="avatar" src="https://sunyanhust.github.io/images/avatar.png?v=1585801174500" alt="">
+  </a>
+  <h1 class="site-title">
+    Gridea
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/sunyanhust" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+        <a href="https://www.zhihu.com/people/sun-yan-90-29" target="_blank">
+          <i class="ri-zhihu-line"></i>
+        </a>
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Keras指定显卡并限制显存使用（tensorflow后端）
+            </h2>
+            <div class="post-info">
+              <span>
+                2020-04-02
+              </span>
+              <span>
+                3 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <blockquote>
+<p>本文转载自<a href="https://zhuanlan.zhihu.com/p/65218239">知乎</a></p>
+</blockquote>
+<p>Keras使用显卡时是默认调用所有的GPU，并且占满所有显存的，所以就很有必要搞清楚Keras如何指定GPU和如何限制显存的使用比例了。</p>
+<h2 id="指定某块gpu">📒指定某块GPU</h2>
+<p>指定GPU很简单，在载入keras和tensorflow之前，设置CUDA计算使用的GPU序号即可。这其实是CUDA本身的参数，对所有深度学习框架都是适用的。需要注意的是最好写在<code>improt keres</code> 和 <code>import tensorflow</code>之前，不然可能出错。</p>
+<pre><code class="language-python">import os
+os.environ[&quot;CUDA_VISIBLE_DEVICES&quot;] = &quot;1&quot;
+</code></pre>
+<p>此代码选择的是编号为“1”的显卡。显卡的编号是从“0”开始的，若只有一块显卡则编号为“0”。</p>
+<h2 id="指定多块gpu">📒指定多块GPU</h2>
+<p>指定多块GPU的方式和前文完全一致，只需要多写几个编号即可：</p>
+<pre><code class="language-python">import os
+os.environ[&quot;CUDA_VISIBLE_DEVICES&quot;] =  &quot;0, 2&quot;
+</code></pre>
+<p>此时选择的是编号为“0”和编号为“2”的显卡</p>
+<h2 id="控制gpu显存使用比例">📒控制GPU显存使用比例</h2>
+<p>Keras是默认占满GPU显存的，我们通过重设backend的gpu_memory_fraction来进行调节，0.3表示占用30%的显存：</p>
+<pre><code class="language-python">import tensorflow as tf
+from keras.backend.tensorflow_backend import set_session
+config = tf.ConfigProto()
+config.gpu_options.per_process_gpu_memory_fraction = 0.3
+set_session(tf.Session(config=config))
+</code></pre>
+<p>不过虽然配置了GPU显存的占用比例，实际运行中若不够用的话还是获取更多的显存。比方说如果运行了3个设置为30%显存的应用，实际上是可能超过100%造成显存不足的。</p>
+<h2 id="指定gpu控制显存使用">📒指定GPU+控制显存使用</h2>
+<p>将指定GPU与控制显存使用比例合并操作即可：</p>
+<pre><code class="language-python">import os
+os.environ[&quot;CUDA_VISIBLE_DEVICES&quot;] = &quot;1&quot;
+import tensorflow as tf
+from keras.backend.tensorflow_backend import set_session
+config = tf.ConfigProto()
+config.gpu_options.per_process_gpu_memory_fraction = 0.3
+set_session(tf.Session(config=config))
+</code></pre>
+<p>该代码实现的是指定编号为“1”的GPU，并设置占用显存的比例为30%。</p>
+<h2 id="显存的按需分配动态增长">📒显存的按需分配（动态增长）</h2>
+<p>如果并不清楚自己的应用分配多少的显存比例合适，可以使用按需分配的方式，也就是动态增长allow_growth：</p>
+<pre><code class="language-python">import os
+os.environ[&quot;CUDA_VISIBLE_DEVICES&quot;] = &quot;1&quot;
+import tensorflow as tf
+from keras.backend.tensorflow_backend import set_session
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True
+set_session(tf.Session(config=config))
+</code></pre>
+<p>该代码实现的是指定编号为“1”的GPU，并设置占用显存的方式为按需增长。</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E6%8C%87%E5%AE%9A%E6%9F%90%E5%9D%97gpu">📒指定某块GPU</a></li>
+<li><a href="#%E6%8C%87%E5%AE%9A%E5%A4%9A%E5%9D%97gpu">📒指定多块GPU</a></li>
+<li><a href="#%E6%8E%A7%E5%88%B6gpu%E6%98%BE%E5%AD%98%E4%BD%BF%E7%94%A8%E6%AF%94%E4%BE%8B">📒控制GPU显存使用比例</a></li>
+<li><a href="#%E6%8C%87%E5%AE%9Agpu%E6%8E%A7%E5%88%B6%E6%98%BE%E5%AD%98%E4%BD%BF%E7%94%A8">📒指定GPU+控制显存使用</a></li>
+<li><a href="#%E6%98%BE%E5%AD%98%E7%9A%84%E6%8C%89%E9%9C%80%E5%88%86%E9%85%8D%E5%8A%A8%E6%80%81%E5%A2%9E%E9%95%BF">📒显存的按需分配（动态增长）</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://sunyanhust.github.io/post/fu-wu-qi-shi-yong-screen-hou-tai-yun-xing-cheng-xu/">
+              <h3 class="post-title">
+                服务器使用screen后台运行程序
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://sunyanhust.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>
