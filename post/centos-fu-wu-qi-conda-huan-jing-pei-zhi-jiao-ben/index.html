@@ -2,19 +2,22 @@
   <head>
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>服务器使用screen后台运行程序 | Gridea</title>
+<title>Centos服务器conda环境配置脚本 | Gridea</title>
 <link rel="shortcut icon" href="https://sunyanhust.github.io/favicon.ico?v=1586010174281">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://sunyanhust.github.io/styles/main.css">
-<link rel="alternate" type="application/atom+xml" title="服务器使用screen后台运行程序 | Gridea - Atom Feed" href="https://sunyanhust.github.io/atom.xml">
+<link rel="alternate" type="application/atom+xml" title="Centos服务器conda环境配置脚本 | Gridea - Atom Feed" href="https://sunyanhust.github.io/atom.xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
 
 
 
-    <meta name="description" content="
-安装screen：yum install -y screen
-确认远程服务器是否安装screen：screen -v
-启动screen 会话：screen -S train，会话名字为train。这个时候会切换到新的会话终端，在里面运行我..." />
+    <meta name="description" content="📃说明
+本脚本主要包括以下几个功能：
+
+从清华源自动下载anaconda并安装
+配置pip国内源为阿里源
+配置conda源为ustc(这一步有疑问，因为conda源经常会不可用，需要经常性测试)
+自动创建tf14环境 安装cudnn和cu..." />
     <meta name="keywords" content="" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
     <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
@@ -85,32 +88,125 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              服务器使用screen后台运行程序
+              Centos服务器conda环境配置脚本
             </h2>
             <div class="post-info">
               <span>
-                2020-04-01
+                2020-04-04
               </span>
               <span>
-                1 min read
+                3 min read
               </span>
               
             </div>
             
             <div class="post-content-wrapper">
               <div class="post-content">
-                <ol>
-<li>安装screen：<code>yum install -y screen</code></li>
-<li>确认远程服务器是否安装screen：screen -v</li>
-<li>启动screen 会话：<code>screen -S train</code>，会话名字为train。这个时候会切换到新的会话终端，在里面运行我们想要的程序。</li>
-<li>切换返回： <code>ctrl+a+d</code></li>
-<li>查看运行中的screen会话：<code>screen -ls</code></li>
-<li>看到对应的id后，重新登录会话,，这里假设id为774：<code>screen -r 774</code>，如果登录不上，使用<code>screen -D -r 774</code> 先踢掉前一用户，再登陆。</li>
+                <h2 id="说明">📃说明</h2>
+<p>本脚本主要包括以下几个功能：</p>
+<ol>
+<li>从清华源自动下载anaconda并安装</li>
+<li>配置pip国内源为阿里源</li>
+<li>配置conda源为ustc(这一步有疑问，因为conda源经常会不可用，需要经常性测试)</li>
+<li>自动创建tf14环境 安装cudnn和cuda以及pytorch 自动测试GPU环境是否可用</li>
+<li>自动创建tf20环境 安装cudnn和cuda以及pytorch 自动测试GPU环境是否可用</li>
 </ol>
+<h2 id="code">💾Code</h2>
+<pre><code class="language-shell">yum install -y bzip2
+
+# download anaconda and install
+echo &quot;download anaconda and install&quot;
+wget https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-5.3.1-Linux-x86_64.sh
+sh Anaconda3-5.3.1-Linux-x86_64.sh -u
+
+source ~/.bashrc
+
+# change pip source to aliyun
+echo &quot;change pip source to aliyun&quot;
+
+if [ ! -d &quot; ~/.pip/&quot; ];then
+mkdir  ~/.pip
+else
+echo &quot;pip existed&quot;
+fi
+
+cat&gt;~/.pip/pip.conf&lt;&lt;EOF
+[global]
+index-url = http://mirrors.aliyun.com/pypi/simple/
+[install]
+trusted-host=mirrors.aliyun.com
+EOF
+
+# change anaconda source to ustc
+echo &quot;change anaconda source to ustc&quot;
+cat&gt;~/.condarc&lt;&lt;EOF 
+channels:
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
+  - https://mirrors.ustc.edu.cn/anaconda/cloud/menpo/
+  - https://mirrors.ustc.edu.cn/anaconda/cloud/bioconda/
+  - https://mirrors.ustc.edu.cn/anaconda/cloud/msys2/
+  - https://mirrors.ustc.edu.cn/anaconda/cloud/conda-forge/
+  - https://mirrors.ustc.edu.cn/anaconda/pkgs/free/
+  - https://mirrors.ustc.edu.cn/anaconda/pkgs/main/
+  - defaults
+show_channel_urls: true
+EOF
+
+#gpu test file
+cat&gt;gpu_test.py&lt;&lt;EOF
+import os
+import tensorflow as tf
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+if tf.test.gpu_device_name():
+    print('Default GPU Device: {}'.format(tf.test.gpu_device_name()))
+    print('Your tensorflow-gpu is available')
+else:
+    print('Your tensorflow-gpu is not available')
+    print(&quot;Please install GPU version of TF&quot;)
+import torch
+if torch.cuda.is_available():
+    print('Default GPU Device: {}'.format(torch.cuda.get_device_name()))
+    print('Your pytorch-gpu is available')
+else:
+    print('Your pytorch-gpu is not available')
+    print(&quot;Please install GPU version of Pytorch&quot;)
+EOF
+
+# creat tf14 env 
+echo &quot;creating tf14 env&quot;
+conda create -n tf14 python=3.7 -y
+conda activate tf14
+
+conda install tensorflow-gpu==1.14.0 -y
+pip install torch torchvision -U
+pip install numpy==1.15.4
+
+python gpu_test.py
+
+# creat tf20 env
+echo &quot;creating tf20 env&quot;
+conda create -n tf20 python=3.7 -y
+conda activate tf20
+
+conda install tensorflow-gpu==2.0.0 -y
+pip install torch torchvision -U
+pip install numpy==1.15.4
+
+python gpu_test.py
+</code></pre>
 
               </div>
               <div class="toc-container">
-                
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E8%AF%B4%E6%98%8E">📃说明</a></li>
+<li><a href="#code">💾Code</a></li>
+</ul>
+</li>
+</ul>
+
               </div>
             </div>
           </article>
@@ -119,9 +215,9 @@
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="https://sunyanhust.github.io/post/hua-wei-mian-shi/">
+            <a href="https://sunyanhust.github.io/post/keras-zhi-ding-xian-qia-bing-xian-zhi-xian-cun-shi-yong-tensorflow-hou-duan/">
               <h3 class="post-title">
-                华为面试
+                Keras指定显卡并限制显存使用（tensorflow后端）
               </h3>
             </a>
           </div>
