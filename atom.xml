@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://sunyanhust.github.io</id>
     <title>Gridea</title>
-    <updated>2020-04-04T14:22:59.415Z</updated>
+    <updated>2020-04-04T15:34:47.607Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://sunyanhust.github.io"/>
     <link rel="self" href="https://sunyanhust.github.io/atom.xml"/>
@@ -10,6 +10,33 @@
     <logo>https://sunyanhust.github.io/images/avatar.png</logo>
     <icon>https://sunyanhust.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Gridea</rights>
+    <entry>
+        <title type="html"><![CDATA[文章汇总：融合BN加速推理、BERT推理加速实践、pytorch C++前端推理模型以及ReZero: 使用加权残差连接加速深度模型收敛]]></title>
+        <id>https://sunyanhust.github.io/post/wen-zhang-hui-zong-rong-he-bn-jia-su-tui-li-bert-tui-li-jia-su-shi-jian-pytorch-cqian-duan-tui-li-mo-xing-yi-ji-rezero-shi-yong-jia-quan-can-chai-lian-jie-jia-su-shen-du-mo-xing-shou-lian/</id>
+        <link href="https://sunyanhust.github.io/post/wen-zhang-hui-zong-rong-he-bn-jia-su-tui-li-bert-tui-li-jia-su-shi-jian-pytorch-cqian-duan-tui-li-mo-xing-yi-ji-rezero-shi-yong-jia-quan-can-chai-lian-jie-jia-su-shen-du-mo-xing-shou-lian/">
+        </link>
+        <updated>2020-04-04T14:48:05.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="融合bn加速推理">📚融合BN加速推理</h2>
+<p>批归一化（Batch Normalization）因其可以加速神经网络训练、使网络训练更稳定，而且还有一定的正则化效果，所以得到了非常广泛的应用。但是，在推理阶段，BN层一般是可以完全融合到前面的卷积层的，而且丝毫不影响性能。<br>
+<strong>参考文章</strong>：<a href="https://zhuanlan.zhihu.com/p/120265831">深度学习推理时融合BN,轻松获得约5%的提速</a><br>
+<strong>代码</strong>：keras的暂时没有找到，有空可以写写</p>
+<h2 id="bert推理加速实践">📚BERT推理加速实践</h2>
+<p>主要基于Faster Transformer，<strong>参考文章</strong>：</p>
+<ol>
+<li><a href="https://zhuanlan.zhihu.com/p/89694963">BERT模型推理加速总结</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/91024786">BERT推理加速实践</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/73715272">NVIDIA BERT推理解决方案Faster Transformer开源啦</a></li>
+</ol>
+<h2 id="pytorch-c前端推理模型">📚pytorch C++前端推理模型</h2>
+<p>使用libtorch C++前端来推理复杂模型，可能会用到。<strong>参考文章</strong>：<a href="https://zhuanlan.zhihu.com/p/69421019">嫌python慢？来这里用pytorch C++前端推理模型</a></p>
+<h2 id="rezero-使用加权残差连接加速深度模型收敛">📚ReZero: 使用加权残差连接加速深度模型收敛</h2>
+<p><strong>论文标题</strong>：ReZero is All You Need: Fast Convergence at Large Depth</p>
+<p><strong>论文作者</strong>：Thomas Bachlechner, Bodhisattwa Prasad Majumder, Huanru Henry Mao, Garrison W. Cottrell, Julian McAuley</p>
+<p><strong>论文链接</strong>：https://arxiv.org/abs/2003.04887</p>
+<p><strong>代码链接</strong>：https://github.com/majumderb/rezero</p>
+<p>简单来说对残差进行了加权并初始化权重为0来加快网络收敛速度。思路比较清晰，可证明也work，具体参考文章<a href="https://zhuanlan.zhihu.com/p/113384612">ReZero: 使用加权残差连接加速深度模型收敛</a></p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[新冠病毒全球大流行：我们缺乏的只是疫苗？]]></title>
         <id>https://sunyanhust.github.io/post/xin-guan-bing-du-quan-qiu-da-liu-xing-wo-men-que-fa-de-zhi-shi-yi-miao/</id>
