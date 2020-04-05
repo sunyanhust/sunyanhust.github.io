@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://sunyanhust.github.io</id>
     <title>Gridea</title>
-    <updated>2020-04-04T15:35:01.582Z</updated>
+    <updated>2020-04-05T15:11:39.234Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://sunyanhust.github.io"/>
     <link rel="self" href="https://sunyanhust.github.io/atom.xml"/>
@@ -10,6 +10,50 @@
     <logo>https://sunyanhust.github.io/images/avatar.png</logo>
     <icon>https://sunyanhust.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Gridea</rights>
+    <entry>
+        <title type="html"><![CDATA[有趣的网站]]></title>
+        <id>https://sunyanhust.github.io/post/you-qu-de-wang-zhan/</id>
+        <link href="https://sunyanhust.github.io/post/you-qu-de-wang-zhan/">
+        </link>
+        <updated>2020-04-05T14:42:54.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="音乐">📻音乐</h2>
+<ul>
+<li><a href="http://music.qkhhyiu.cn/">音乐搜索器</a>: 多站合一音乐搜索解决方案</li>
+<li><a href="http://guozhivip.com/yinyue/">果汁音乐</a></li>
+</ul>
+<h2 id="搜索">🔮搜索</h2>
+<ul>
+<li><a href="https://scholar.chongbuluo.com/">虫部落</a></li>
+<li><a href="http://guozhivip.com/so/">果汁搜索</a></li>
+<li><a href="https://jikipedia.com/">小鸡词典</a>：网络流行语</li>
+<li><a href="https://zh.wikihow.com/%E9%A6%96%E9%A1%B5">wikihow</a>：生活维基百科</li>
+</ul>
+<h2 id="排行榜">📜排行榜</h2>
+<ul>
+<li><a href="http://guozhivip.com/rank/">果汁排行榜</a></li>
+<li><a href="https://tophub.today/">今日热榜</a></li>
+</ul>
+<p>##📚 其他</p>
+<ul>
+<li>
+<p><a href="http://guozhivip.com/eat/">今天吃啥呀</a></p>
+</li>
+<li>
+<p><a href="http://www.underseacat.com/fan">云风扇</a>：心静自然凉</p>
+</li>
+<li>
+<p><a href="https://fonts.safe.360.cn/">360查字体</a> ：你的字体能商用吗</p>
+</li>
+<li>
+<p><a href="https://www.gaoding.com/koutu">搞定抠图</a></p>
+</li>
+<li>
+<p><a href="http://www.nows.fun/">毒鸡汤</a></p>
+</li>
+<li></li>
+</ul>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[文章汇总：融合BN加速推理、BERT推理加速实践、pytorch C++前端推理模型以及ReZero: 使用加权残差连接加速深度模型收敛]]></title>
         <id>https://sunyanhust.github.io/post/wen-zhang-hui-zong-rong-he-bn-jia-su-tui-li-bert-tui-li-jia-su-shi-jian-pytorch-cqian-duan-tui-li-mo-xing-yi-ji-rezero-shi-yong-jia-quan-can-chai-lian-jie-jia-su-shen-du-mo-xing-shou-lian/</id>
