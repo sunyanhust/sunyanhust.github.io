@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://sunyanhust.github.io</id>
     <title>Gridea</title>
-    <updated>2020-04-05T15:11:39.234Z</updated>
+    <updated>2020-04-05T15:14:33.544Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://sunyanhust.github.io"/>
     <link rel="self" href="https://sunyanhust.github.io/atom.xml"/>
@@ -33,7 +33,7 @@
 <li><a href="http://guozhivip.com/rank/">果汁排行榜</a></li>
 <li><a href="https://tophub.today/">今日热榜</a></li>
 </ul>
-<p>##📚 其他</p>
+<h2 id="其他">📚 其他</h2>
 <ul>
 <li>
 <p><a href="http://guozhivip.com/eat/">今天吃啥呀</a></p>
