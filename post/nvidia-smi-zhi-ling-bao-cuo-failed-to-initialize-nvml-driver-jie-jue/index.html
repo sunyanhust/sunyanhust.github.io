@@ -2,25 +2,21 @@
   <head>
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>华为面试 | Gridea</title>
+<title>nvidia-smi指令报错：Failed to initialize NVML: Driver解决 | Gridea</title>
 <link rel="shortcut icon" href="https://sunyanhust.github.io/favicon.ico?v=1586180688049">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://sunyanhust.github.io/styles/main.css">
-<link rel="alternate" type="application/atom+xml" title="华为面试 | Gridea - Atom Feed" href="https://sunyanhust.github.io/atom.xml">
+<link rel="alternate" type="application/atom+xml" title="nvidia-smi指令报错：Failed to initialize NVML: Driver解决 | Gridea - Atom Feed" href="https://sunyanhust.github.io/atom.xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
 
 
 
-    <meta name="description" content="
+    <meta name="description" content="最近装深度学习环境的时候遇见的，主要原因是旧的显卡驱动没卸载。
+首先需要卸载驱动
+sudo apt-get purge nvidia*
 
-def eval(input_str):
-    op1 = ('+','-')
-    op2 = ('*','/')
-    
-    temp = []
-    result = 0
-    num = &quot;&quot;
-..." />
+然后重新安装新的驱动即可。
+参考文章：https://www.zhihu.com/people/sun..." />
     <meta name="keywords" content="" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
     <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
@@ -91,83 +87,26 @@ def eval(input_str):
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              华为面试
+              nvidia-smi指令报错：Failed to initialize NVML: Driver解决
             </h2>
             <div class="post-info">
               <span>
-                2020-03-09
+                2020-04-05
               </span>
               <span>
-                2 min read
+                1 min read
               </span>
               
             </div>
             
             <div class="post-content-wrapper">
               <div class="post-content">
-                <pre><code class="language-python">
+                <p>最近装深度学习环境的时候遇见的，主要原因是旧的显卡驱动没卸载。</p>
+<p>首先需要卸载驱动</p>
+<pre><code class="language-shell">sudo apt-get purge nvidia*
 </code></pre>
-<pre><code class="language-python">def eval(input_str):
-    op1 = ('+','-')
-    op2 = ('*','/')
-    
-    temp = []
-    result = 0
-    num = &quot;&quot;
-    for s in input_str:
-        if s not in op1 and s not in op2:
-           num = num + s
-        else:
-            temp.append(int(num))
-            temp.append(s)
-            num = &quot;&quot;
-    temp.append(int(num))
-
-    print(temp)
-
-    run = False
-    temp1 = []
-    for i, d in enumerate(temp):
-        if run:
-            run = False
-            continue
-        if d not in op2:
-           temp1.append(d)
-        else:
-            if d == '*':
-                r = temp1[-1] * temp[i+1]
-            else:
-                r = int(temp1[-1] / temp[i+1])
-            temp1.pop()
-            temp1.append(r)
-            run = True
-    print(temp1)
-
-    run = False
-    temp2 = []
-    for i, d in enumerate(temp1):
-        if run:
-            run = False
-            continue
-        if d not in op1:
-           temp2.append(d)
-        else:
-            if d == '+':
-                r = temp2[-1] + temp1[i+1]
-            else:
-                r = temp2[-1] - temp1[i+1]
-            temp2.pop()
-            temp2.append(r)
-            run = True
-    print(temp2)
-
-    result = temp2[0]
-    return result
-
-if __name__ == &quot;__main__&quot;:
-    str = &quot;10+5*3/2-7*2+1&quot;
-    print(eval(str))
-</code></pre>
+<p>然后重新安装新的驱动即可。</p>
+<p>参考文章：https://www.zhihu.com/people/sun-yan-90-29</p>
 
               </div>
               <div class="toc-container">
@@ -180,9 +119,9 @@ if __name__ == &quot;__main__&quot;:
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="https://sunyanhust.github.io/post/nlp-mian-shi/">
+            <a href="https://sunyanhust.github.io/post/you-qu-de-wang-zhan/">
               <h3 class="post-title">
-                NLP面试
+                有趣的网站
               </h3>
             </a>
           </div>
