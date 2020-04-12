@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://sunyanhust.github.io</id>
     <title>Gridea</title>
-    <updated>2020-04-06T14:00:23.703Z</updated>
+    <updated>2020-04-12T03:07:05.013Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://sunyanhust.github.io"/>
     <link rel="self" href="https://sunyanhust.github.io/atom.xml"/>
@@ -10,6 +10,86 @@
     <logo>https://sunyanhust.github.io/images/avatar.png</logo>
     <icon>https://sunyanhust.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Gridea</rights>
+    <entry>
+        <title type="html"><![CDATA[PaddleHub]]></title>
+        <id>https://sunyanhust.github.io/post/paddlehub/</id>
+        <link href="https://sunyanhust.github.io/post/paddlehub/">
+        </link>
+        <updated>2020-04-12T03:04:18.000Z</updated>
+        <content type="html"><![CDATA[<p>最近用了一下PaddleHub，感觉还挺好用的。这里两个使用PaddleHub的示例。</p>
+<h2 id="分词">分词</h2>
+<p>这个分词和官网的分词效果一样，觉得比jieba之类的要好。</p>
+<pre><code class="language-python"># pip install pyahocorasick
+# https://www.paddlepaddle.org.cn/hubdetail?name=lac&amp;en_category=LexicalAnalysis
+import paddlehub as hub
+
+temp_user_dict = [
+    dict(word='自然', tag='n', freq='10000')
+]
+
+
+def make_dict(user_dicts):
+    with open('user.dict', 'w') as f:
+        for user_dict in user_dicts:
+            f.write(user_dict['word'] + '\t' +
+                    user_dict['tag'] + '\t' +
+                    user_dict['freq'] + '\n')
+
+
+make_dict(temp_user_dict)
+
+lac = hub.Module(name='lac')
+lac.set_user_dict(dict_path='user.dict')
+results = lac.lexical_analysis(texts=['我爱自然语言处理'],
+                               use_gpu=False,
+                               batch_size=1,
+                               return_tag=True)
+
+for result in results:
+    print(result[&quot;word&quot;])
+    print(result[&quot;tag&quot;])
+</code></pre>
+<h2 id="阅读理解">阅读理解</h2>
+<pre><code class="language-python">import paddlehub as hub
+
+module = hub.Module(name=&quot;roberta_wwm_ext_chinese_L-24_H-1024_A-16&quot;)
+inputs, outputs, program = module.context(trainable=True, max_seq_len=384)
+dataset = hub.dataset.CMRC2018()
+
+reader = hub.reader.ReadingComprehensionReader(
+    dataset=dataset,
+    vocab_path=module.get_vocab_path(),
+    max_seq_len=384)
+
+strategy = hub.AdamWeightDecayStrategy(
+    learning_rate=5e-5,
+    weight_decay=0.01,
+    warmup_proportion=0.1
+)
+
+config = hub.RunConfig(use_cuda=False, num_epoch=2, batch_size=12, strategy=strategy)
+seq_output = outputs[&quot;sequence_output&quot;]
+
+# feed_list的Tensor顺序不可以调整
+feed_list = [
+    inputs[&quot;input_ids&quot;].name,
+    inputs[&quot;position_ids&quot;].name,
+    inputs[&quot;segment_ids&quot;].name,
+    inputs[&quot;input_mask&quot;].name,
+]
+
+reading_comprehension_task = hub.ReadingComprehensionTask(
+    data_reader=reader,
+    feature=seq_output,
+    feed_list=feed_list,
+    config=config,
+    sub_task=&quot;cmrc2018&quot;)
+
+reading_comprehension_task.finetune_and_eval()
+
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[对待婚姻的态度]]></title>
         <id>https://sunyanhust.github.io/post/guan-yu-hun-yin/</id>
@@ -443,339 +523,6 @@ if __name__ == &quot;__main__&quot;:
     str = &quot;10+5*3/2-7*2+1&quot;
     print(eval(str))
 </code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[NLP面试]]></title>
-        <id>https://sunyanhust.github.io/post/nlp-mian-shi/</id>
-        <link href="https://sunyanhust.github.io/post/nlp-mian-shi/">
-        </link>
-        <updated>2020-03-07T04:14:52.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="深度学习和nlp">深度学习和NLP</h2>
-<h3 id="过拟合欠拟合偏差方差正则化-交叉验证">过拟合欠拟合，偏差方差，正则化， 交叉验证</h3>
-<figure data-type="image" tabindex="1"><img src="https://s2.ax1x.com/2020/03/07/3jyaLQ.png" alt="3jyaLQ.png" loading="lazy"></figure>
-<ol>
-<li>
-<p><strong>怎么判断过拟合， 过拟合如何处理</strong><br>
-定义：过拟合（overfitting）是指在模型训练中由于训练数据包含抽样误差，对抽样误差也进行了很好的拟合。<br>
-表现：模型在训练集上效果好，在测试集上效果差（相差20%以上），模型泛化能力弱。<br>
-原因：（1）观察值与真实值存在偏差。（2）训练数据不足，数据太少，导致无法描述问题的真实分布。（3）训练模型过度，导致模型非常复杂。<br>
-处理方法：（1）数据层面上，增加数据或者数据增广 （2）模型层面，主要是降低模型的复杂度：减少数据特征，L1，L2，Droupout，BN，集成学习，早期停止策略 ，使用简单的模型</p>
-</li>
-<li>
-<p><strong>怎么判断欠拟合， 欠拟合如何处理</strong><br>
-定义：欠拟合（underfitting）是指模型无法得到较低的训练误差。<br>
-表现：训练的模型在训练集上面的表现很差，在验证集上面的表现也很差。<br>
-原因：模型发生欠拟合的最本质原因是训练的模型太简单，最通用的特征模型都没有学习到<br>
-处理方法：（1）添加新的特征 （2）减少正则化参数 （3）使用更深或者更宽的模型 （4）使用集成方法</p>
-</li>
-</ol>
-<p><img src="https://s2.ax1x.com/2020/03/07/3jc2VJ.png" alt="3jc2VJ.png" loading="lazy"><br>
-3. <strong>偏差和方差的定义，为什么要在两者之间进行权衡</strong><br>
-偏差（Bias）表示模型输出与真实值之间的误差，刻画模型的准确度，方差（Variance）表示模型在训练集和验证集之间的误差，刻画模型的稳定性。<br>
-在一个实际系统中，Bias与Variance往往是不能兼得的。如果要降低模型的Bias，就一定程度上会提高模型的Variance，反之亦然。造成这种现象的根本原因是，我们总是希望试图用有限训练样本去估计无限的真实数据。当我们更加相信这些数据的真实性，而忽视对模型的先验知识，就会尽量保证模型在训练样本上的准确度，这样可以减少模型的Bias。但是，这样学习到的模型，很可能会失去一定的泛化能力，从而造成过拟合，降低模型在真实数据上的表现，增加模型的不确定性。相反，如果更加相信我们对于模型的先验知识，在学习模型的过程中对模型增加更多的限制，就可以降低模型的variance，提高模型的稳定性，但也会使模型的Bias增大。因此通常需要在两者之间权衡。</p>
-<ol start="4">
-<li>
-<p>L1和L2正则化的区别，为什么L1可以获得稀疏解，L2解接近于0？<br>
-L1正则化就是在loss function后边所加正则项为L1范数，加上L1范数容易得到稀疏解（0比较多）。L2正则化就是loss function后边所加正则项为L2范数的平方，加上L2正则相比于L1正则来说，得到的解比较平滑（不是稀疏），但是同样能够保证解中接近于0（但不是等于0，所以相对平滑）的维度比较多，降低模型的复杂度。</p>
-</li>
-<li>
-<p>word2vec如何实现，实现方法有什么区别</p>
-</li>
-<li>
-<p>基于业务的问答系统如何设计</p>
-</li>
-<li>
-<p>如何训练基于知识图谱的问答系统</p>
-</li>
-<li>
-<p>在训练KBQA时会用到例如freebase这样的开源知识图谱，他们过大的体积在训练中要如何进行优化</p>
-</li>
-<li>
-<p>基于匹配的问答系统的关键技术是什么（文本相似度匹配）</p>
-</li>
-<li>
-<p>文本相似度匹配有哪些实现方法（转特征求距离，或者使用自然语言推理的模型）</p>
-</li>
-<li>
-<p>开放式的对话系统如何训练</p>
-</li>
-<li>
-<p>transformer和RNN的区别</p>
-</li>
-<li>
-<p>推荐系统了解吗，有那两部分（召回和排序）</p>
-</li>
-<li>
-<p>怎么抓取热门</p>
-</li>
-<li>
-<p>召回有哪些（微博召回怎么做），排序算法了解吗</p>
-</li>
-<li>
-<p>小样本数据集怎么做</p>
-</li>
-<li>
-<p>样本不均衡怎么搞（重点考核损失函数优化）</p>
-</li>
-<li>
-<p>AUC的具体含义</p>
-</li>
-<li>
-<p>介绍推荐系统的召回和排序系统，召回系统的输出是什么</p>
-</li>
-<li>
-<p>RF和GBDT介绍、RF的属性采样时有放回还是不放回</p>
-</li>
-<li>
-<p>手写LSTM的公式（手画LSTM图）</p>
-</li>
-<li>
-<p>lightgbm对缺失值的处理方法</p>
-</li>
-<li>
-<p>kmeans的K值确定方法</p>
-</li>
-<li>
-<p>FM（factorization machine）模型的公式写一下，模型解决了什么问题</p>
-</li>
-<li>
-<p>DIN（deep interest network）主要使用了什么机制，解释一下，画一下DIN的框图</p>
-</li>
-<li>
-<p>DIN的activation unit的作用</p>
-</li>
-<li>
-<p>一个模型的bais和variance的具体定义是什么，bais和variance哪个比较重要，为什么是trade-off<br>
-任何机器学习算法的预测误差可以分解为三部分，即：偏差+方差+不可约的误差（对于给定的模型，我们不能进一步减少的误差）。</p>
-</li>
-<li>
-<p>泛化误差解释（bais^2+variance+noise）</p>
-</li>
-<li>
-<p>dropout的工作机制，dropout在训练过程如何使用</p>
-</li>
-<li>
-<p>聚类算法了解程度、kmeans介绍、K值选择、kmeans++算法)</p>
-</li>
-<li>
-<p>推荐系统还有融合框架，假如通过两种不同的召回和ranking系统得到结果，如何在两种备选结果中最终给用户推荐出最适合的十个广告</p>
-</li>
-<li>
-<p>XGBOOST ，LGB，GBDT 的区别</p>
-</li>
-<li>
-<p>一阶优化器，二阶优化器</p>
-</li>
-<li>
-<p>Attention怎么做，self-attention怎么做</p>
-</li>
-<li>
-<p>Transformer细节，Bert细节（多头和缩放）</p>
-</li>
-<li>
-<p>标签平滑怎么做的</p>
-</li>
-<li>
-<p>交叉熵，相对熵</p>
-</li>
-<li>
-<p>Bagging, boosting , 偏差，方差关系<br>
-二者都是集成学习算法，都是将多个弱学习器组合成强学习器的方法。<br>
-Bagging：从原始数据集中每一轮有放回地抽取训练集，训练得到k个弱学习器，将这k个弱学习器以投票的方式得到最终的分类结果。<br>
-Boosting：每一轮根据上一轮的分类结果动态调整每个样本在分类器中的权重，训练得到k个弱分类器，他们都有各自的权重，通过加权组合的方式得到最终的分类结果。</p>
-</li>
-<li>
-<p>CRF理论与代码实现细节, CRF与HMM关系，区别</p>
-</li>
-<li>
-<p>维特比，beam-search 时间复杂度，区别</p>
-</li>
-<li>
-<p>XGBOOST ，LGB 生长策略，分类策略</p>
-</li>
-<li>
-<p>少样本情况怎么缓解</p>
-</li>
-<li>
-<p>实际场景做softmax很容易出现下溢问题, 怎么解决<br>
-可以用每个维度减去一个固定值</p>
-</li>
-<li>
-<p>正则项为什么能减缓过拟合</p>
-</li>
-<li>
-<p>过拟合解决方法，正则项为什么能减缓过拟合, 权重衰减等价于哪个正则项</p>
-</li>
-<li>
-<p>随机森林的随机体现在哪里</p>
-</li>
-<li>
-<p>tm和rnn的区别</p>
-</li>
-<li>
-<p>LR和svm的区别是什么</p>
-</li>
-<li>
-<p>lstm的优点，记忆单元是怎么工作的，他为什么可以克服梯度消失</p>
-</li>
-<li>
-<p>bp的原理</p>
-</li>
-<li>
-<p>bn的原理</p>
-</li>
-<li>
-<p>解释一下AUC的计算方法和它代表的意义。问了一个相关的问题，当时没有答的很好，就是一个数据如果分成两份，分别在两份数据上计算出AUC为AUC_1和AUC_2，问整体数据的AUC是多少？面试的时候一直以为这个是能算出来的，所以一直在推导公式。最后的答案其实是无法得到，因为从局部的有序无法直接退出全局的有序，这个题目其实还是考查对于AUC这个指标的理解深度。</p>
-</li>
-<li>
-<p>word2vec的两种优化方法，说下分层softmax是怎么做的。word2vec的优点和缺点，是如何解决oov的问题的，实际上word2vec如何使用</p>
-</li>
-<li>
-<p>lucene搜索</p>
-</li>
-<li>
-<p>关键字搜索如何实现</p>
-</li>
-<li>
-<p>单元测试。</p>
-</li>
-<li>
-<p>深度优先和广度优先的本质区别。</p>
-</li>
-<li>
-<p>从搜谷歌到返回页面，发生了什么。</p>
-</li>
-<li>
-<p>batchsize大或小有什么问题, LR怎么设置</p>
-</li>
-</ol>
-<h2 id="计算机网络">计算机网络</h2>
-<ol>
-<li>TCP和UDP的区别<br>
-1、TCP面向连接（如打电话要先拨号建立连接）;UDP是无连接的，即发送数据之前不需要建立连接<br>
-2、TCP提供可靠的服务。也就是说，通过TCP连接传送的数据，无差错，不丢失，不重复，且按序到达;UDP尽最大努力交付，即不保证可靠交付<br>
-3、TCP面向字节流，实际上是TCP把数据看成一连串无结构的字节流;UDP是面向报文的UDP没有拥塞控制，因此网络出现拥塞不会使源主机的发送速率降低（对实时应用很有用，如IP电话，实时视频会议等<br>
-4、每一条TCP连接只能是点到点的;UDP支持一对一，一对多，多对一和多对多的交互通信<br>
-5、TCP首部开销20字节;UDP的首部开销小，只有8个字节<br>
-6、TCP的逻辑通信信道是全双工的可靠信道，UDP则是不可靠信道</li>
-<li>线程和进程的区别，如何实现多线程；</li>
-<li>L1范数能否去除冗余特征</li>
-<li>没坐标怎么做kmeans</li>
-<li>决策树的特征和神经网络特征有什么差异</li>
-<li>句子向量有哪些生成方式</li>
-<li>词袋模型有哪些不足的地方<br>
-稀疏，无序，纬度爆炸, 每个词都是正交的，相当于每个词都没有关系。</li>
-<li>albert相对于bert的改进</li>
-<li>稀疏词向量 用skip-gram还是cbow训练好</li>
-<li>word2vec  两种训练方式哪种更好？对生僻词谁更好？</li>
-<li>在工程中什么样的结果会表明是over fitting/under fitting</li>
-<li>对于CNN 卷积层、和池化层的物理意义是什么, 对于池化的max方法和mean方法 分别适合针对什么情况下应用？<br>
-当feature map中的信息都具有一定贡献的时候使用AvgPooling，比如网络走到比较深的地方，这个时候特征图的H W都比较小，包含的语义信息较多，这个时候再使用MaxPooling就不太合适了.反之为了减少无用信息的影响时用maxpool，比如网络浅层常常见到maxpool，因为开始几层对图像而言包含较多的无关信息。二者的具体使用场景只有在具体任务上观察，实际效果炼丹后才知道。</li>
-<li>L2正则化的penalize term和先验有关系嘛？如有是什么样的关系</li>
-<li>树模型怎么剪枝？如何处理缺失值？</li>
-<li>讲讲Glove的原理，它和Word2vec有什么区别？Fasttext说一下</li>
-<li>画一下ELMo的模型图，讲一下ELMo的原理，为什么它能解决词歧义的问题？</li>
-<li>画Bert的模型图，讲原理，预训练的过程。Bert输入是由哪些组成的？Bert相比于ELMo有什么优点？它是怎么用作下游任务的？</li>
-<li>Attention机制的原理，常用的Attention计算相似度方式有哪些，写一下公式。</li>
-<li>有分布式训练神经网络的经验吗？多卡跑模型的命令是什么</li>
-<li>简述一种中文分词算法。</li>
-<li>讲一下Hessian矩阵？ Hessian矩阵是对称矩阵吗？</li>
-<li>SVM的优化函数讲一下？</li>
-<li>聚类算法了解吗？DBSCAN讲一下</li>
-</ol>
-<h2 id="机器学习">机器学习</h2>
-<ol>
-<li>Xgboost的原理介绍以及如何并行化实现</li>
-<li>生成模型和判别模型（SVM、LR属于哪种）</li>
-</ol>
-<h2 id="python">Python</h2>
-<ol>
-<li>Python的装饰器, 迭代器和生成器<br>
-装饰器的功能：在不修改原函数及其调用方式的情况下对原函数功能进行扩展<br>
-装饰器的本质：就是一个闭包函数<br>
-迭代器就是用于迭代操作的的对象，遵从迭代协议（内部实现了__iter__()和__next__()方法，可以像列表（可迭代对象，只有__iter__()方法）一样迭代获取其中的值，与列表不同的是，构建迭代器的时候，不像列表一样一次性把数据加到内存，而是以一种延迟计算的方式返回元素，即调用next方法时候返回此值。<br>
-生成器本质上也是一个迭代器，自己实现了可迭代协议，与迭代器器不同的是生成器的实现方式不同，可以通过生成器表达式和生成器函数两种方式实现，代码更简洁。生成器和迭代器都是惰性可迭代对象，只能遍历一次，数据取完抛出Stopiteration异常<pre><code class="language-python">#生成器函数（带yield语句）
-def gen():
-    yield 3
-#生成器表达式（类似列表推导式）
-gen=(x for x in range(1,5))
-</code></pre>
-</li>
-<li>Python中的Lambda函数</li>
-<li>Python回调</li>
-<li>python中函数self的区别，读取一个txt文件中2.5是什么数据类型，2.5+2.5等于多少</li>
-<li>深拷贝和浅拷贝的区别</li>
-<li>线程进程的区别, python内部实现的多线程有什么问题</li>
-<li>Python2和Python3 map的差别<br>
-Python3 map函数返回一个迭代器, Python2中返回一个列表。</li>
-<li>Python可变数据类型和不可变数据类型分别有哪些？<br>
-可变数据类型：列表list和字典dict。<br>
-不可变数据类型：整型int、浮点型float、字符串型string和元组tuple。</li>
-<li>Python是如何进行内存管理的<br>
-Python采用的是基于值的内存管理方式，如果为不同变量赋值相同值，则在内存中只有一份该值，多个变量指向同一块内存地址</li>
-</ol>
-<h2 id="linux基础">Linux基础</h2>
-<ol>
-<li>AWK</li>
-<li>nohup</li>
-</ol>
-<p>##代码</p>
-<ol>
-<li>最长回文子串</li>
-<li>给你10亿数据，不重复，求前k大。（n为10亿，k为2亿）</li>
-<li>给你1000个数组，求最长的等差数列</li>
-<li>TopK（快排和小顶堆分别实现，分析时间和空间复杂度）</li>
-<li>分析插入和快排的时间和空间复杂度，稳定，不稳定？稳定排序和不稳定排序算法的定义？手写快排</li>
-<li>LR的随机梯度实现</li>
-<li>数组的最大和，数组的最大乘积</li>
-<li>数组排成最大的数字</li>
-<li>数据中出现空值处理的方法</li>
-<li>给定一个矩阵，在矩阵中选取一行，求取某一行某个数附近的5个数的值，需要用哪种数据结构（KD树）</li>
-<li>二叉树的最短路径</li>
-<li>给定10G的文件，只有2G的内存，如何将文件放到内存中</li>
-<li>编辑距离</li>
-<li>完全二叉树的节点个数</li>
-<li>二叉树的前序遍历的递归和非递归、时间复杂度</li>
-<li>15分钟 写一个k-means，没写完时间不够</li>
-<li>打家劫舍II</li>
-<li>反转链表</li>
-<li>用神经网络搭建一个LR</li>
-<li>如果有很大的文件，怎么统计文件里面出现的各个单词的数量</li>
-<li>用两个栈实现一个队列</li>
-<li>o(n)实现三色排序</li>
-<li>有一个城市名称列表，如何判断语句中是否出现了列表中的城市(KMP)</li>
-<li>手写tfidf</li>
-<li>二叉树层次遍历</li>
-<li>大数加法 大数相乘</li>
-<li>二叉树之子型遍历，每行打印</li>
-<li>数组，可以分别从最左边最右边取个数字，求取得k个数的最大值，O（1）空间呢，k的取值范围的条件</li>
-<li>k个的列表反转</li>
-<li>对称二叉树</li>
-<li>连续数组，给定k，求连续数组最小区间。动态规划要优化时间，贪心法需要证明。</li>
-<li>圆上三点组成锐角三角形概率</li>
-<li>cnn的卷积计算，参数计算。</li>
-<li>倒水问题</li>
-<li>最长公共子序列</li>
-<li>最大上升子序列</li>
-<li>旋转数组找K值</li>
-<li>蓄水池抽样算法（Reservoir Sampling）</li>
-<li>跳台阶+有一次后退机会</li>
-<li>排序二叉树 插入新数字</li>
-<li>归并排序中的归并</li>
-<li>给定一个int数组，求数组中能组成三角形的个数。</li>
-<li>数组中索引K前面是有序的，K之后也是有序的，调整使得整个数组有序，要求空间复杂度O(1)</li>
-<li>有1,2,5,10,20,50的纸币，求凑到100元一共有多少种方法</li>
-<li>合并两个有序链表，合并K个有序链表</li>
-<li>顺时针打印矩阵</li>
-</ol>
-<h2 id="智力题">智力题</h2>
-<ol>
-<li>2个蜡烛1个小时，如何记录15分钟</li>
-<li>只有01生成器，如何生成 0-3等概率，如何生成 0-k等概率（模拟二进制）</li>
-<li>ABCD乘以9等于DCBA，那么ABCD各等于几？</li>
-</ol>
-<p>反转链表</p>
 ]]></content>
     </entry>
 </feed>
