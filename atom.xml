@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://sunyanhust.github.io</id>
     <title>Gridea</title>
-    <updated>2020-04-12T12:54:17.019Z</updated>
+    <updated>2020-04-16T03:57:00.566Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://sunyanhust.github.io"/>
     <link rel="self" href="https://sunyanhust.github.io/atom.xml"/>
@@ -10,6 +10,751 @@
     <logo>https://sunyanhust.github.io/images/avatar.png</logo>
     <icon>https://sunyanhust.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Gridea</rights>
+    <entry>
+        <title type="html"><![CDATA[知识点备忘和ToDo]]></title>
+        <id>https://sunyanhust.github.io/post/zhi-shi-dian-bei-wang-he-todo/</id>
+        <link href="https://sunyanhust.github.io/post/zhi-shi-dian-bei-wang-he-todo/">
+        </link>
+        <updated>2020-04-16T03:02:25.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="比较琐碎的知识">比较琐碎的知识</h2>
+<ul>
+<li>联想小新是开机按F2进入bios</li>
+<li>windows上编辑的sh文件在linux上需要转换，转换软件为<code>doc2unix</code>，命令为<code>doc2unix filename</code></li>
+<li>GPU机器之间拷贝文件直接scp加上机器的ip地址就可以，因为各个机器在同一局域网内</li>
+</ul>
+<h2 id="文本分类kaggle-kernel">文本分类kaggle kernel</h2>
+<h3 id="基于lstm的多标签文本分类">基于LSTM的多标签文本分类</h3>
+<p>kaggle kernel 链接： https://www.kaggle.com/rftexas/gru-lstm-rnn-101</p>
+<p><strong>主要亮点</strong>：</p>
+<ol>
+<li>使用了tf.keras进行构建，很多代码可以复用为baseline</li>
+<li>读取和加载Glove词向量</li>
+<li>AUC作为评价标准</li>
+<li>数据集处理为tf_dataset输入keras模型</li>
+<li>在训练集训练后，在验证集继续训练两个epochs（小技巧，可能很有用）</li>
+</ol>
+<pre><code class="language-python">import gc
+import pickle
+import re
+import string
+import warnings
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import tensorflow as tf
+from keras.preprocessing.sequence import pad_sequences
+from keras.preprocessing.text import Tokenizer
+from tensorflow.keras import backend as K
+from tensorflow.keras.losses import binary_crossentropy
+from tensorflow.keras import initializers, regularizers, constraints
+from tensorflow.keras.callbacks import ReduceLROnPlateau, LearningRateScheduler, EarlyStopping
+from tensorflow.keras.layers import Layer, Dense, Input, Embedding, SpatialDropout1D, Bidirectional, LSTM, \
+    GlobalMaxPooling1D, GlobalAveragePooling1D
+from tensorflow.keras.layers import concatenate
+from tensorflow.keras.models import Model
+from tqdm.notebook import tqdm
+
+tqdm.pandas()
+
+warnings.simplefilter('ignore')
+
+# HYPERPARAMETERS
+MAX_LEN = 220
+MAX_FEATURES = 100000
+EMBED_SIZE = 600
+BATCH_SIZE = 128
+N_EPOCHS = 5
+LEARNING_RATE = 8e-4
+
+# We will concatenate Crawl and GloVe embeddings
+CRAWL_EMB_PATH = '../input/pickled-glove840b300d-for-10sec-loading/glove.840B.300d.pkl'
+GLOVE_EMB_PATH = '../input/pickled-crawl300d2m-for-kernel-competitions/crawl-300d-2M.pkl'
+
+
+def display_training_curves(training, validation, title, subplot):
+    &quot;&quot;&quot;
+    Quickly display training curves
+    &quot;&quot;&quot;
+    if subplot % 10 == 1:
+        plt.subplots(figsize=(10, 10), facecolor='#F0F0F0')
+        plt.tight_layout()
+
+    ax = plt.subplot(subplot)
+    ax.set_facecolor('#F8F8F8')
+    ax.plot(training)
+    ax.plot(validation)
+    ax.set_title('model' + title)
+    ax.set_ylabel(title)
+    ax.set_xlabel('epoch')
+    ax.legend(['train', 'valid'])
+
+
+def get_coeffs(word, *arr):
+    return word, np.asarray(arr, dtype='float32')
+
+
+def load_embeddings(embed_dir):
+    with open(embed_dir, 'rb') as  infile:
+        embeddings = pickle.load(infile)
+        return embeddings
+
+
+def build_embedding_matrix(word_index, embeddings_index, max_features, lower=True, verbose=True):
+    embedding_matrix = np.zeros((max_features, 300))
+    for word, i in tqdm(word_index.items(), len=(word_index.items())):
+        if lower:
+            word = word.lower()
+        if i &gt;= max_features: continue
+        try:
+            embedding_vector = embeddings_index[word]
+        except:
+            embedding_vector = embeddings_index[&quot;unknown&quot;]
+        if embedding_vector is not None:
+            # words not found in embedding index will be all-zeros.
+            embedding_matrix[i] = embedding_vector
+    return embedding_matrix
+
+
+def build_matrix(word_index, embeddings_index):
+    embedding_matrix = np.zeros((len(word_index) + 1, 300))
+    for word, i in word_index.items():
+        try:
+            embedding_matrix[i] = embeddings_index[word]
+        except:
+            embedding_matrix[i] = embeddings_index[&quot;unknown&quot;]
+    return embedding_matrix
+
+
+class Attention(Layer):
+    &quot;&quot;&quot;
+    Custom Keras attention layer
+    Reference: https://www.kaggle.com/qqgeogor/keras-lstm-attention-glove840b-lb-0-043
+    &quot;&quot;&quot;
+
+    def __init__(self, step_dim, W_regularizer=None, b_regularizer=None,
+                 W_constraint=None, b_constraint=None, bias=True, **kwargs):
+
+        self.supports_masking = True
+
+        self.bias = bias
+        self.step_dim = step_dim
+        self.features_dim = None
+        super(Attention, self).__init__(**kwargs)
+
+        self.param_W = {
+            'initializer': initializers.get('glorot_uniform'),
+            'name': '{}_W'.format(self.name),
+            'regularizer': regularizers.get(W_regularizer),
+            'constraint': constraints.get(W_constraint)
+        }
+        self.W = None
+
+        self.param_b = {
+            'initializer': 'zero',
+            'name': '{}_b'.format(self.name),
+            'regularizer': regularizers.get(b_regularizer),
+            'constraint': constraints.get(b_constraint)
+        }
+        self.b = None
+
+    def build(self, input_shape):
+        assert len(input_shape) == 3
+
+        self.features_dim = input_shape[-1]
+        self.W = self.add_weight(shape=(input_shape[-1],),
+                                 **self.param_W)
+
+        if self.bias:
+            self.b = self.add_weight(shape=(input_shape[1],),
+                                     **self.param_b)
+
+        self.built = True
+
+    def compute_mask(self, input, input_mask=None):
+        return None
+
+    def call(self, x, mask=None):
+        step_dim = self.step_dim
+        features_dim = self.features_dim
+
+        eij = K.reshape(
+            K.dot(K.reshape(x, (-1, features_dim)), K.reshape(self.W, (features_dim, 1))),
+            (-1, step_dim))
+
+        if self.bias:
+            eij += self.b
+        eij = K.tanh(eij)
+        a = K.exp(eij)
+
+        if mask is not None:
+            a *= K.cast(mask, K.floatx())
+
+        a /= K.cast(K.sum(a, axis=1, keepdims=True) + K.epsilon(), K.floatx())
+        a = K.expand_dims(a)
+        weighted_input = x * a
+        return K.sum(weighted_input, axis=1)
+
+    def compute_output_shape(self, input_shape):
+        return input_shape[0], self.features_dim
+
+
+# We create a balanced
+
+print('Loading train sets...')
+train1 = pd.read_csv(&quot;/kaggle/input/jigsaw-multilingual-toxic-comment-classification/jigsaw-toxic-comment-train.csv&quot;)
+train2 = pd.read_csv(&quot;/kaggle/input/jigsaw-multilingual-toxic-comment-classification/jigsaw-unintended-bias-train.csv&quot;)
+
+train = pd.concat([
+    train1[['comment_text', 'toxic']],
+    train2[['comment_text', 'toxic']].query('toxic==1'),
+    train2[['comment_text', 'toxic']].query('toxic==0').sample(n=100000, random_state=0)
+])
+
+del train1, train2
+
+print('Loading validation sets...')
+valid = pd.read_csv('/kaggle/input/val-en-df/validation_en.csv')
+
+print('Loading test sets...')
+test = pd.read_csv('/kaggle/input/test-en-df/test_en.csv')
+sub = pd.read_csv('/kaggle/input/jigsaw-multilingual-toxic-comment-classification/sample_submission.csv')
+
+misspell_dict = {&quot;aren't&quot;: &quot;are not&quot;, &quot;can't&quot;: &quot;cannot&quot;, &quot;couldn't&quot;: &quot;could not&quot;,
+                 &quot;didn't&quot;: &quot;did not&quot;, &quot;doesn't&quot;: &quot;does not&quot;, &quot;don't&quot;: &quot;do not&quot;,
+                 &quot;hadn't&quot;: &quot;had not&quot;, &quot;hasn't&quot;: &quot;has not&quot;, &quot;haven't&quot;: &quot;have not&quot;,
+                 &quot;he'd&quot;: &quot;he would&quot;, &quot;he'll&quot;: &quot;he will&quot;, &quot;he's&quot;: &quot;he is&quot;,
+                 &quot;i'd&quot;: &quot;I had&quot;, &quot;i'll&quot;: &quot;I will&quot;, &quot;i'm&quot;: &quot;I am&quot;, &quot;isn't&quot;: &quot;is not&quot;,
+                 &quot;it's&quot;: &quot;it is&quot;, &quot;it'll&quot;: &quot;it will&quot;, &quot;i've&quot;: &quot;I have&quot;, &quot;let's&quot;: &quot;let us&quot;,
+                 &quot;mightn't&quot;: &quot;might not&quot;, &quot;mustn't&quot;: &quot;must not&quot;, &quot;shan't&quot;: &quot;shall not&quot;,
+                 &quot;she'd&quot;: &quot;she would&quot;, &quot;she'll&quot;: &quot;she will&quot;, &quot;she's&quot;: &quot;she is&quot;,
+                 &quot;shouldn't&quot;: &quot;should not&quot;, &quot;that's&quot;: &quot;that is&quot;, &quot;there's&quot;: &quot;there is&quot;,
+                 &quot;they'd&quot;: &quot;they would&quot;, &quot;they'll&quot;: &quot;they will&quot;, &quot;they're&quot;: &quot;they are&quot;,
+                 &quot;they've&quot;: &quot;they have&quot;, &quot;we'd&quot;: &quot;we would&quot;, &quot;we're&quot;: &quot;we are&quot;,
+                 &quot;weren't&quot;: &quot;were not&quot;, &quot;we've&quot;: &quot;we have&quot;, &quot;what'll&quot;: &quot;what will&quot;,
+                 &quot;what're&quot;: &quot;what are&quot;, &quot;what's&quot;: &quot;what is&quot;, &quot;what've&quot;: &quot;what have&quot;,
+                 &quot;where's&quot;: &quot;where is&quot;, &quot;who'd&quot;: &quot;who would&quot;, &quot;who'll&quot;: &quot;who will&quot;,
+                 &quot;who're&quot;: &quot;who are&quot;, &quot;who's&quot;: &quot;who is&quot;, &quot;who've&quot;: &quot;who have&quot;,
+                 &quot;won't&quot;: &quot;will not&quot;, &quot;wouldn't&quot;: &quot;would not&quot;, &quot;you'd&quot;: &quot;you would&quot;,
+                 &quot;you'll&quot;: &quot;you will&quot;, &quot;you're&quot;: &quot;you are&quot;, &quot;you've&quot;: &quot;you have&quot;,
+                 &quot;'re&quot;: &quot; are&quot;, &quot;wasn't&quot;: &quot;was not&quot;, &quot;we'll&quot;: &quot; will&quot;, &quot;tryin'&quot;: &quot;trying&quot;}
+
+
+def _get_misspell(misspell_dict):
+    misspell_re = re.compile('(%s)' % '|'.join(misspell_dict.keys()))
+    return misspell_dict, misspell_re
+
+
+def replace_typical_misspell(text):
+    misspellings, misspellings_re = _get_misspell(misspell_dict)
+
+    def replace(match):
+        return misspellings[match.group(0)]
+
+    return misspellings_re.sub(replace, text)
+
+
+puncts = [',', '.', '&quot;', ':', ')', '(', '-', '!', '?', '|', ';', &quot;'&quot;, '$', '&amp;', '/', '[', ']',
+          '&gt;', '%', '=', '#', '*', '+', '\\', '•', '~', '@', '£', '·', '_', '{', '}', '©', '^',
+          '®', '`', '&lt;', '→', '°', '€', '™', '›', '♥', '←', '×', '§', '″', '′', 'Â', '█',
+          '½', 'à', '…', '“', '★', '”', '–', '●', 'â', '►', '−', '¢', '²', '¬', '░', '¶',
+          '↑', '±', '¿', '▾', '═', '¦', '║', '―', '¥', '▓', '—', '‹', '─', '▒', '：', '¼',
+          '⊕', '▼', '▪', '†', '■', '’', '▀', '¨', '▄', '♫', '☆', 'é', '¯', '♦', '¤', '▲',
+          'è', '¸', '¾', 'Ã', '⋅', '‘', '∞', '∙', '）', '↓', '、', '│', '（', '»', '，', '♪',
+          '╩', '╚', '³', '・', '╦', '╣', '╔', '╗', '▬', '❤', 'ï', 'Ø', '¹', '≤', '‡', '√']
+
+
+def clean_text(x):
+    x = str(x)
+    for punct in puncts + list(string.punctuation):
+        if punct in x:
+            x = x.replace(punct, f' {punct} ')
+    return x
+
+
+def clean_numbers(x):
+    return re.sub(r'\d+', ' ', x)
+
+
+def preprocess(train, valid, test, tfms):
+    for tfm in tfms:
+        print(tfm.__name__)
+        train['comment_text'] = train['comment_text'].progress_apply(tfm)
+        valid['comment_text_en'] = valid['comment_text_en'].progress_apply(tfm)
+        test['content'] = test['content'].progress_apply(tfm)
+
+    return train, valid, test
+
+
+tfms = [replace_typical_misspell, clean_text, clean_numbers]
+train, valid, test = preprocess(train, valid, test, tfms)
+
+tokenizer = Tokenizer(num_words=MAX_FEATURES, filters='', lower=False)
+
+print('Fitting tokenizer...')
+tokenizer.fit_on_texts(list(train['comment_text']) + list(valid['comment_text_en']) + list(test['content_en']))
+word_index = tokenizer.word_index
+
+print('Building training set...')
+X_train = tokenizer.texts_to_sequences(list(train['comment_text']))
+y_train = train['toxic'].values
+
+print('Building validation set...')
+X_valid = tokenizer.texts_to_sequences(list(valid['comment_text_en']))
+y_valid = valid['toxic'].values
+
+print('Building test set ...')
+X_test = tokenizer.texts_to_sequences(list(test['content_en']))
+
+print('Padding sequences...')
+X_train = pad_sequences(X_train, maxlen=MAX_LEN)
+X_valid = pad_sequences(X_valid, maxlen=MAX_LEN)
+X_test = pad_sequences(X_test, maxlen=MAX_LEN)
+
+y_train = train.toxic.values
+y_valid = valid.toxic.values
+
+del tokenizer
+
+print('Loading Crawl embeddings...')
+crawl_embeddings = load_embeddings(CRAWL_EMB_PATH)
+
+print('Loading GloVe embeddings...')
+glove_embeddings = load_embeddings(GLOVE_EMB_PATH)
+
+print('Building matrices...')
+embedding_matrix_1 = build_matrix(word_index, crawl_embeddings)
+embedding_matrix_2 = build_matrix(word_index, glove_embeddings)
+
+print('Concatenating embedding matrices...')
+embedding_matrix = np.concatenate([embedding_matrix_1, embedding_matrix_2], axis=1)
+
+del embedding_matrix_1, embedding_matrix_2
+del crawl_embeddings, glove_embeddings
+
+gc.collect()
+
+train_dataset = (
+    tf.data.Dataset
+        .from_tensor_slices((X_train, y_train))
+        .repeat()
+        .shuffle(2048)
+        .batch(BATCH_SIZE)
+)
+
+valid_dataset = (
+    tf.data.Dataset
+        .from_tensor_slices((X_valid, y_valid))
+        .batch(BATCH_SIZE)
+        .cache()
+)
+
+test_dataset = (
+    tf.data.Dataset
+        .from_tensor_slices(X_test)
+        .batch(BATCH_SIZE)
+)
+
+
+def build_model(word_index, embedding_matrix, verbose=True):
+    &quot;&quot;&quot;
+    credits go to: https://www.kaggle.com/thousandvoices/simple-lstm/
+    &quot;&quot;&quot;
+    sequence_input = Input(shape=(MAX_LEN,), dtype=tf.int32)
+
+    embedding_layer = Embedding(*embedding_matrix.shape,
+                                weights=[embedding_matrix],
+                                trainable=False)
+
+    x = embedding_layer(sequence_input)
+    x = SpatialDropout1D(0.3)(x)
+    x = Bidirectional(LSTM(256, return_sequences=True))(x)
+    x = Bidirectional(LSTM(128, return_sequences=True))(x)
+
+    att = Attention(MAX_LEN)(x)
+    avg_pool1 = GlobalAveragePooling1D()(x)
+    max_pool1 = GlobalMaxPooling1D()(x)
+    hidden = concatenate([att, avg_pool1, max_pool1])
+
+    hidden = Dense(512, activation='relu')(hidden)
+    hidden = Dense(128, activation='relu')(hidden)
+    out = Dense(1, activation='sigmoid')(hidden)
+    model = Model(sequence_input, out)
+
+    return model
+
+model = build_model(word_index, embedding_matrix)
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=[tf.keras.metrics.AUC()])
+model.summary()
+
+file_weights = 'best_model.h5'
+# cb1 = ModelCheckpoint(file_weights, save_best_only=True)
+
+cb2 = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=3)
+cb3 = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=2, verbose=1, cooldown=0, min_lr=0.0001)
+cb4 = LearningRateScheduler(lambda epoch: LEARNING_RATE * (0.6 ** epoch))
+
+n_steps = X_train.shape[0] // BATCH_SIZE
+
+train_history = model.fit(
+    train_dataset,
+    steps_per_epoch=n_steps,
+    validation_data=valid_dataset,
+    callbacks=[cb4],
+    epochs=N_EPOCHS
+)
+
+display_training_curves(
+    train_history.history['loss'],
+    train_history.history['val_loss'],
+    'loss',
+    211)
+
+display_training_curves(
+    train_history.history['auc'],
+    train_history.history['val_auc'],
+    'AUC',
+    212)
+
+n_steps = X_valid.shape[0] // BATCH_SIZE
+
+train_history = model.fit(
+    valid_dataset.repeat(),
+    steps_per_epoch=n_steps,
+    callbacks=[cb4],
+    epochs=N_EPOCHS
+)
+
+preds = model.predict(test_dataset, verbose=1)
+sub['toxic'] = preds
+
+</code></pre>
+<h3 id="基于bert的多标签文本分类使用tpu">基于BERT的多标签文本分类(使用TPU)</h3>
+<p>kaggle kernel 链接： https://www.kaggle.com/sunyancn/jigsaw-tpu-bert-with-huggingface-and-keras</p>
+<p><strong>主要亮点</strong>：</p>
+<ol>
+<li>使用了transformers的分词器进行快速分词</li>
+<li>文本长度的可视化</li>
+<li>TF Hub BERT模型的加载</li>
+<li>TPU策略</li>
+</ol>
+<pre><code class="language-python"># %% [markdown]
+# ## About this notebook
+# 
+# *[Jigsaw Multilingual Toxic Comment Classification](https://www.kaggle.com/c/jigsaw-multilingual-toxic-comment-classification)* is the 3rd annual competition organized by the Jigsaw team. It follows *[Toxic Comment Classification Challenge](https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge)*, the original 2018 competition, and *[Jigsaw Unintended Bias in Toxicity Classification](https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification)*, which required the competitors to consider biased ML predictions in their new models. This year, the goal is to use english only training data to run toxicity predictions on many different languages, which can be done using multilingual models, and speed up using TPUs.
+# 
+# Many awesome notebooks has already been made so far. Many of them used really cool technologies like [Pytorch XLA](https://www.kaggle.com/theoviel/bert-pytorch-huggingface-starter). This notebook instead aims at constructing a **fast, concise, reusable, and beginner-friendly model scaffold**. It will focus on the following points:
+# * **Using Tensorflow and Keras**: Tensorflow is a powerful framework, and Keras makes the training process extremely easy to understand. This is especially good for beginners to learn how to use TPUs, and for experts to focus on the modelling aspect.
+# * **Using Huggingface's `transformers` library**: [This library](https://huggingface.co/transformers/) is extremely popular, so using this let you easily integrate the end result into your ML pipelines, and can be easily reused for your other projects.
+# * **Native TPU usage**: The TPU usage is abstracted using the native `strategy` that was created using Tensorflow's `tf.distribute.experimental.TPUStrategy`. This avoids getting too much into the lower-level aspect of TPU management.
+# * **Use a subset of the data**: Instead of using the entire dataset, we will only use the 2018 subset of the data available, which makes this much faster, all while achieving a respectable accuracy.
+
+# %% [code]
+import os
+import warnings
+
+import numpy as np
+import pandas as pd
+import tensorflow as tf
+from tensorflow.keras.layers import Dense, Input
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.models import Model
+from tensorflow.keras.callbacks import ModelCheckpoint
+from kaggle_datasets import KaggleDatasets
+import transformers
+import traitlets
+import matplotlib.pyplot as plt
+import seaborn as sns
+from tqdm.notebook import tqdm
+from tokenizers import BertWordPieceTokenizer
+from sklearn.metrics import roc_auc_score
+
+warnings.simplefilter(&quot;ignore&quot;)
+
+# %% [markdown]
+# ## Helper Functions
+
+# %% [code]
+def fast_encode(texts, tokenizer, chunk_size=256, maxlen=512):
+    tokenizer.enable_truncation(max_length=maxlen)
+    tokenizer.enable_padding(max_length=maxlen)
+    all_ids = []
+    
+    for i in tqdm(range(0, len(texts), chunk_size)):
+        text_chunk = texts[i:i+chunk_size].tolist()
+        encs = tokenizer.encode_batch(text_chunk)
+        all_ids.extend([enc.ids for enc in encs])
+    
+    return np.array(all_ids)
+
+# %% [code]
+def build_model(transformer, loss='binary_crossentropy', max_len=512):
+    input_word_ids = Input(shape=(max_len,), dtype=tf.int32, name=&quot;input_word_ids&quot;)
+    sequence_output = transformer(input_word_ids)[0]
+    cls_token = sequence_output[:, 0, :]
+    x = tf.keras.layers.Dropout(0.35)(cls_token)
+    out = Dense(1, activation='sigmoid')(x)
+    
+    model = Model(inputs=input_word_ids, outputs=out)
+    model.compile(Adam(lr=3e-5), loss=loss, metrics=[tf.keras.metrics.AUC()])
+    
+    return model
+
+# %% [markdown]
+# Cosine similarity calculates similarity by measuring the cosine of angle between two vectors. This is calculated as:
+# ![](https://miro.medium.com/max/426/1*hub04IikybZIBkSEcEOtGA.png)
+# 
+# Cosine Similarity calculation for two vectors A and B [source]
+# With cosine similarity, we need to convert sentences into vectors. One way to do that is to use bag of words with either TF (term frequency) or TF-IDF (term frequency- inverse document frequency). The choice of TF or TF-IDF depends on application and is immaterial to how cosine similarity is actually performed — which just needs vectors. TF is good for text similarity in general, but TF-IDF is good for search query relevance.
+
+# %% [code]
+# https://stackoverflow.com/questions/8897593/how-to-compute-the-similarity-between-two-text-documents
+import nltk, string
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+nltk.download('punkt') # if necessary...
+
+
+stemmer = nltk.stem.porter.PorterStemmer()
+remove_punctuation_map = dict((ord(char), None) for char in string.punctuation)
+
+def stem_tokens(tokens):
+    return [stemmer.stem(item) for item in tokens]
+
+'''remove punctuation, lowercase, stem'''
+def normalize(text):
+    return stem_tokens(nltk.word_tokenize(text.lower().translate(remove_punctuation_map)))
+
+vectorizer = TfidfVectorizer(tokenizer=normalize, stop_words='english')
+
+def cosine_sim(text1, text2):
+    tfidf = vectorizer.fit_transform([text1, text2])
+    return ((tfidf * tfidf.T).A)[0,1]
+
+# %% [markdown]
+# ## TPU Configs
+
+# %% [code]
+AUTO = tf.data.experimental.AUTOTUNE
+
+# Create strategy from tpu
+tpu = tf.distribute.cluster_resolver.TPUClusterResolver()
+tf.config.experimental_connect_to_cluster(tpu)
+tf.tpu.experimental.initialize_tpu_system(tpu)
+strategy = tf.distribute.experimental.TPUStrategy(tpu)
+
+# Data access
+#GCS_DS_PATH = KaggleDatasets().get_gcs_path('kaggle/input/') 
+
+# %% [markdown]
+# ## Create fast tokenizer
+
+# %% [code]
+# First load the real tokenizer
+tokenizer = transformers.BertTokenizer.from_pretrained('bert-base-uncased')
+
+# Save the loaded tokenizer locally
+save_path = '/kaggle/working/distilbert_base_uncased/'
+if not os.path.exists(save_path):
+    os.makedirs(save_path)
+tokenizer.save_pretrained(save_path)
+
+# Reload it with the huggingface tokenizers library
+fast_tokenizer = BertWordPieceTokenizer('distilbert_base_uncased/vocab.txt', lowercase=True)
+fast_tokenizer
+
+# %% [markdown]
+# ## Load text data into memory
+
+# %% [code]
+train1 = pd.read_csv(&quot;/kaggle/input/jigsaw-multilingual-toxic-comment-classification/jigsaw-toxic-comment-train.csv&quot;)
+train2 = pd.read_csv(&quot;/kaggle/input/jigsaw-multilingual-toxic-comment-classification/jigsaw-unintended-bias-train.csv&quot;)
+
+valid = pd.read_csv('/kaggle/input/val-en-df/validation_en.csv')
+test1 = pd.read_csv('/kaggle/input/test-en-df/test_en.csv')
+test2 = pd.read_csv('/kaggle/input/jigsaw-multilingual-toxic-test-translated/jigsaw_miltilingual_test_translated.csv')
+sub = pd.read_csv('/kaggle/input/jigsaw-multilingual-toxic-comment-classification/sample_submission.csv')
+
+# %% [code]
+test2.head()
+
+# %% [markdown]
+# ## Test dataset comparision
+
+# %% [code]
+plt.figure(figsize=(12, 8))
+
+sns.distplot(train1.comment_text.str.len(), label='train')
+sns.distplot(test1.content_en.str.len(), label='test1')
+sns.distplot(test2.translated.str.len(), label='test2')
+plt.legend();
+
+# %% [code]
+plt.figure(figsize=(12, 8))
+
+sns.distplot(train1.comment_text.str.len(), label='train')
+sns.distplot(test1.content_en.str.len(), label='test1')
+sns.distplot(test2.translated.str.len(), label='test2')
+plt.xlim([0, 512])
+plt.legend();
+
+# %% [markdown]
+# Lets calculate cosine similarity two translated test datasets.
+
+# %% [code]
+test_set_similarity = [cosine_sim(t1, t2) for t1, t2 in tqdm(zip(test1.content_en, test2.translated))]
+
+plt.figure(figsize=(12, 8))
+
+sns.distplot(test_set_similarity);
+
+# %% [markdown]
+# ## Fast encode
+
+# %% [code]
+x_train = fast_encode(train1.comment_text.astype(str), fast_tokenizer, maxlen=512)
+x_valid = fast_encode(valid.comment_text_en.astype(str), fast_tokenizer, maxlen=512)
+x_test1 = fast_encode(test1.content_en.astype(str), fast_tokenizer, maxlen=512)
+x_test2 = fast_encode(test2.translated.astype(str), fast_tokenizer, maxlen=512)
+
+y_train = train1.toxic.values
+y_valid = valid.toxic.values
+
+# %% [markdown]
+# ## Build datasets objects
+
+# %% [code]
+train_dataset = (
+    tf.data.Dataset
+    .from_tensor_slices((x_train, y_train))
+    .repeat()
+    .shuffle(2048)
+    .batch(64)
+    .prefetch(AUTO)
+)
+
+valid_dataset = (
+    tf.data.Dataset
+    .from_tensor_slices((x_valid, y_valid))
+    .batch(64)
+    .cache()
+    .prefetch(AUTO)
+)
+
+test_dataset = [(
+    tf.data.Dataset
+    .from_tensor_slices(x_test1)
+    .batch(64)
+),
+    (
+    tf.data.Dataset
+    .from_tensor_slices(x_test2)
+    .batch(64)
+)]
+
+# %% [markdown]
+# # Focal Loss
+
+# %% [code]
+from tensorflow.keras import backend as K
+
+def focal_loss(gamma=2., alpha=.2):
+    def focal_loss_fixed(y_true, y_pred):
+        pt_1 = tf.where(tf.equal(y_true, 1), y_pred, tf.ones_like(y_pred))
+        pt_0 = tf.where(tf.equal(y_true, 0), y_pred, tf.zeros_like(y_pred))
+        return -K.mean(alpha * K.pow(1. - pt_1, gamma) * K.log(pt_1)) - K.mean((1 - alpha) * K.pow(pt_0, gamma) * K.log(1. - pt_0))
+    return focal_loss_fixed
+
+# %% [markdown]
+# ## Load model into the TPU
+
+# %% [code]
+%%time
+with strategy.scope():
+    transformer_layer = transformers.TFBertModel.from_pretrained('bert-base-uncased')
+    model = build_model(transformer_layer, loss=focal_loss(gamma=1.5), max_len=512)
+model.summary()
+
+# %% [markdown]
+# ## RocAuc Callback
+
+# %% [code]
+from tensorflow.keras.callbacks import Callback 
+
+class RocAucCallback(Callback):
+    def __init__(self, test_data, score_thr):
+        self.test_data = test_data
+        self.score_thr = score_thr
+        self.test_pred = []
+        
+    def on_epoch_end(self, epoch, logs=None):
+        if logs['val_auc'] &gt; self.score_thr:
+            print('\nRun TTA...')
+            for td in self.test_data:
+                self.test_pred.append(self.model.predict(td))
+
+# %% [markdown]
+# # LrScheduler
+
+# %% [code]
+def build_lrfn(lr_start=0.000001, lr_max=0.000002, 
+               lr_min=0.0000001, lr_rampup_epochs=7, 
+               lr_sustain_epochs=0, lr_exp_decay=.87):
+    lr_max = lr_max * strategy.num_replicas_in_sync
+
+    def lrfn(epoch):
+        if epoch &lt; lr_rampup_epochs:
+            lr = (lr_max - lr_start) / lr_rampup_epochs * epoch + lr_start
+        elif epoch &lt; lr_rampup_epochs + lr_sustain_epochs:
+            lr = lr_max
+        else:
+            lr = (lr_max - lr_min) * lr_exp_decay**(epoch - lr_rampup_epochs - lr_sustain_epochs) + lr_min
+        return lr
+    
+    return lrfn
+
+# %% [code]
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(10, 7))
+
+_lrfn = build_lrfn()
+plt.plot([i for i in range(35)], [_lrfn(i) for i in range(35)]);
+
+# %% [markdown]
+# ## Train Model
+
+# %% [code]
+roc_auc = RocAucCallback(test_dataset, 0.9195)
+lrfn = build_lrfn()
+lr_schedule = tf.keras.callbacks.LearningRateScheduler(lrfn, verbose=1)
+
+train_history = model.fit(
+    train_dataset,
+    steps_per_epoch=150,
+    validation_data=valid_dataset,
+    callbacks=[lr_schedule, roc_auc],
+    epochs=35
+)
+
+# %% [markdown]
+# ## Submission
+
+# %% [code]
+sub['toxic'] = np.mean(roc_auc.test_pred, axis=0)
+sub.to_csv('submission.csv', index=False)
+
+# %% [markdown]
+# # Reference
+# * [Jigsaw TPU: DistilBERT with Huggingface and Keras](https://www.kaggle.com/xhlulu/jigsaw-tpu-distilbert-with-huggingface-and-keras)
+# * [inference of bert tpu model ml w/ validation](https://www.kaggle.com/abhishek/inference-of-bert-tpu-model-ml-w-validation)
+# * [Overview of Text Similarity Metrics in Python](https://towardsdatascience.com/overview-of-text-similarity-metrics-3397c4601f50)
+# * [test-en-df](https://www.kaggle.com/bamps53/test-en-df)
+# * [val_en_df](https://www.kaggle.com/bamps53/val-en-df)
+# * [Jigsaw multilingual toxic - test translated](https://www.kaggle.com/kashnitsky/jigsaw-multilingual-toxic-test-translated)
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Latex画神经网络图]]></title>
         <id>https://sunyanhust.github.io/post/latex-hua-shen-jing-wang-luo-tu/</id>
@@ -525,22 +1270,6 @@ config.gpu_options.allow_growth = True
 set_session(tf.Session(config=config))
 </code></pre>
 <p>该代码实现的是指定编号为“1”的GPU，并设置占用显存的方式为按需增长。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[服务器使用screen后台运行程序]]></title>
-        <id>https://sunyanhust.github.io/post/fu-wu-qi-shi-yong-screen-hou-tai-yun-xing-cheng-xu/</id>
-        <link href="https://sunyanhust.github.io/post/fu-wu-qi-shi-yong-screen-hou-tai-yun-xing-cheng-xu/">
-        </link>
-        <updated>2020-04-01T12:49:31.000Z</updated>
-        <content type="html"><![CDATA[<ol>
-<li>安装screen：<code>yum install -y screen</code></li>
-<li>确认远程服务器是否安装screen：screen -v</li>
-<li>启动screen 会话：<code>screen -S train</code>，会话名字为train。这个时候会切换到新的会话终端，在里面运行我们想要的程序。</li>
-<li>切换返回： <code>ctrl+a+d</code></li>
-<li>查看运行中的screen会话：<code>screen -ls</code></li>
-<li>看到对应的id后，重新登录会话,，这里假设id为774：<code>screen -r 774</code>，如果登录不上，使用<code>screen -D -r 774</code> 先踢掉前一用户，再登陆。</li>
-</ol>
 ]]></content>
     </entry>
 </feed>
