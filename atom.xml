@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://sunyanhust.github.io</id>
     <title>Gridea</title>
-    <updated>2020-04-18T21:05:53.250Z</updated>
+    <updated>2020-05-22T11:04:40.990Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://sunyanhust.github.io"/>
     <link rel="self" href="https://sunyanhust.github.io/atom.xml"/>
@@ -10,6 +10,310 @@
     <logo>https://sunyanhust.github.io/images/avatar.png</logo>
     <icon>https://sunyanhust.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Gridea</rights>
+    <entry>
+        <title type="html"><![CDATA[如何入门深度学习]]></title>
+        <id>https://sunyanhust.github.io/post/ru-he-ru-men-shen-du-xue-xi/</id>
+        <link href="https://sunyanhust.github.io/post/ru-he-ru-men-shen-du-xue-xi/">
+        </link>
+        <updated>2020-05-22T10:20:45.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="step0搭建深度学习环境">Step0：搭建深度学习环境</h2>
+<ul>
+<li>Doker搭建深度学习环境：https://www.cnblogs.com/bingmang/p/9813686.html</li>
+<li>Pycharm远程连接服务器：https://www.cnblogs.com/zhuminghui/p/10947930.html</li>
+<li>服务器使用screen后台运行程序：https://sunyanhust.github.io/post/fu-wu-qi-shi-yong-screen-hou-tai-yun-xing-cheng-xu/</li>
+</ul>
+<h2 id="step1-通过阅读python深度学习掌握深度学习基础知识">Step1: 通过阅读《Python深度学习》掌握深度学习基础知识</h2>
+<p>《Python深度学习》这本书是Keras之父Francois Chollet所著，该书假定读者无任何机器学习知识，以Keras为工具，使用丰富的范例示范深度学习的最佳实践，该书通俗易懂，全书没有一个数学公式，注重培养读者的深度学习直觉。</p>
+<ul>
+<li><strong>电子版下载</strong>：https://pan.baidu.com/s/1-4q6VjLTb3ZxcefyNCbjSA 提取码：wtzo，</li>
+<li><strong>代码</strong>：https://github.com/fchollet/deep-learning-with-python-notebooks</li>
+</ul>
+<h2 id="step2通过教程30天吃掉那只-tensorflow2深入学习tensorflow">Step2：通过教程《30天吃掉那只 TensorFlow2》深入学习TensorFlow</h2>
+<ul>
+<li>📚 gitbook电子书地址： https://lyhue1991.github.io/eat_tensorflow2_in_30_days</li>
+<li>🚀 github项目地址：https://github.com/lyhue1991/eat_tensorflow2_in_30_days</li>
+<li>🐳 kesci专栏地址：https://www.kesci.com/home/column/5d8ef3c3037db3002d3aa3a0</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">日期</th>
+<th style="text-align:left">学习内容</th>
+<th style="text-align:right">内容难度</th>
+<th style="text-align:right">预计学习时间</th>
+<th style="text-align:right">更新状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right"> </td>
+<td style="text-align:left"><a href="./%E4%B8%80%E3%80%81TensorFlow%E7%9A%84%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B.md"><strong>一、TensorFlow的建模流程</strong></a></td>
+<td style="text-align:right">⭐️</td>
+<td style="text-align:right">0hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day1</td>
+<td style="text-align:left"><a href="./1-1,%E7%BB%93%E6%9E%84%E5%8C%96%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B%E8%8C%83%E4%BE%8B.md">1-1,结构化数据建模流程范例</a></td>
+<td style="text-align:right">⭐️⭐️⭐️</td>
+<td style="text-align:right">1hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day2</td>
+<td style="text-align:left"><a href="./1-2,%E5%9B%BE%E7%89%87%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B%E8%8C%83%E4%BE%8B.md">1-2,图片数据建模流程范例</a></td>
+<td style="text-align:right">⭐️⭐️⭐️⭐️</td>
+<td style="text-align:right">2hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day3</td>
+<td style="text-align:left"><a href="./1-3,%E6%96%87%E6%9C%AC%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B%E8%8C%83%E4%BE%8B.md">1-3,文本数据建模流程范例</a></td>
+<td style="text-align:right">⭐️⭐️⭐️⭐️⭐️</td>
+<td style="text-align:right">2hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day4</td>
+<td style="text-align:left"><a href="./1-4,%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1%E6%B5%81%E7%A8%8B%E8%8C%83%E4%BE%8B.md">1-4,时间序列数据建模流程范例</a></td>
+<td style="text-align:right">⭐️⭐️⭐️⭐️⭐️</td>
+<td style="text-align:right">2hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right"> </td>
+<td style="text-align:left"><a href="./%E4%BA%8C%E3%80%81TensorFlow%E7%9A%84%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5.md"><strong>二、TensorFlow的核心概念</strong></a></td>
+<td style="text-align:right">⭐️</td>
+<td style="text-align:right">0hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day5</td>
+<td style="text-align:left"><a href="./2-1,%E5%BC%A0%E9%87%8F%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.md">2-1,张量数据结构</a></td>
+<td style="text-align:right">⭐️⭐️⭐️⭐️</td>
+<td style="text-align:right">1hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day6</td>
+<td style="text-align:left"><a href="./2-2,%E4%B8%89%E7%A7%8D%E8%AE%A1%E7%AE%97%E5%9B%BE.md">2-2,三种计算图</a></td>
+<td style="text-align:right">⭐️⭐️⭐️⭐️⭐️</td>
+<td style="text-align:right">2hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day7</td>
+<td style="text-align:left"><a href="./2-3,%E8%87%AA%E5%8A%A8%E5%BE%AE%E5%88%86%E6%9C%BA%E5%88%B6.md">2-3,自动微分机制</a></td>
+<td style="text-align:right">⭐️⭐️⭐️</td>
+<td style="text-align:right">1hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right"> </td>
+<td style="text-align:left"><a href="./%E4%B8%89%E3%80%81TensorFlow%E7%9A%84%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84.md"><strong>三、TensorFlow的层次结构</strong></a></td>
+<td style="text-align:right">⭐️</td>
+<td style="text-align:right">0hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day8</td>
+<td style="text-align:left"><a href="./3-1,%E4%BD%8E%E9%98%B6API%E7%A4%BA%E8%8C%83.md">3-1,低阶API示范</a></td>
+<td style="text-align:right">⭐️⭐️⭐️⭐️</td>
+<td style="text-align:right">1hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day9</td>
+<td style="text-align:left"><a href="./3-2,%E4%B8%AD%E9%98%B6API%E7%A4%BA%E8%8C%83.md">3-2,中阶API示范</a></td>
+<td style="text-align:right">⭐️⭐️⭐️</td>
+<td style="text-align:right">1hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day10</td>
+<td style="text-align:left"><a href="./3-3,%E9%AB%98%E9%98%B6API%E7%A4%BA%E8%8C%83.md">3-3,高阶API示范</a></td>
+<td style="text-align:right">⭐️⭐️⭐️</td>
+<td style="text-align:right">1hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right"> </td>
+<td style="text-align:left"><a href="./%E5%9B%9B%E3%80%81TensorFlow%E7%9A%84%E4%BD%8E%E9%98%B6API.md"><strong>四、TensorFlow的低阶API</strong></a></td>
+<td style="text-align:right">⭐️</td>
+<td style="text-align:right">0hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day11</td>
+<td style="text-align:left"><a href="./4-1,%E5%BC%A0%E9%87%8F%E7%9A%84%E7%BB%93%E6%9E%84%E6%93%8D%E4%BD%9C.md">4-1,张量的结构操作</a></td>
+<td style="text-align:right">⭐️⭐️⭐️⭐️⭐️</td>
+<td style="text-align:right">2hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day12</td>
+<td style="text-align:left"><a href="./4-2,%E5%BC%A0%E9%87%8F%E7%9A%84%E6%95%B0%E5%AD%A6%E8%BF%90%E7%AE%97.md">4-2,张量的数学运算</a></td>
+<td style="text-align:right">⭐️⭐️⭐️⭐️</td>
+<td style="text-align:right">1hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day13</td>
+<td style="text-align:left"><a href="./4-3,AutoGraph%E7%9A%84%E4%BD%BF%E7%94%A8%E8%A7%84%E8%8C%83.md">4-3,AutoGraph的使用规范</a></td>
+<td style="text-align:right">⭐️⭐️⭐️</td>
+<td style="text-align:right">0.5hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day14</td>
+<td style="text-align:left"><a href="./4-4,AutoGraph%E7%9A%84%E6%9C%BA%E5%88%B6%E5%8E%9F%E7%90%86.md">4-4,AutoGraph的机制原理</a></td>
+<td style="text-align:right">⭐️⭐️⭐️⭐️⭐️</td>
+<td style="text-align:right">2hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day15</td>
+<td style="text-align:left"><a href="./4-5,AutoGraph%E5%92%8Ctf.Module.md">4-5,AutoGraph和tf.Module</a></td>
+<td style="text-align:right">⭐️⭐️⭐️⭐️</td>
+<td style="text-align:right">1hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right"> </td>
+<td style="text-align:left"><a href="./%E4%BA%94%E3%80%81TensorFlow%E7%9A%84%E4%B8%AD%E9%98%B6API.md"><strong>五、TensorFlow的中阶API</strong></a></td>
+<td style="text-align:right">⭐️</td>
+<td style="text-align:right">0hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day16</td>
+<td style="text-align:left"><a href="./5-1,%E6%95%B0%E6%8D%AE%E7%AE%A1%E9%81%93Dataset.md">5-1,数据管道Dataset</a></td>
+<td style="text-align:right">⭐️⭐️⭐️⭐️⭐️</td>
+<td style="text-align:right">2hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day17</td>
+<td style="text-align:left"><a href="./5-2,%E7%89%B9%E5%BE%81%E5%88%97feature_column.md">5-2,特征列feature_column</a></td>
+<td style="text-align:right">⭐️⭐️⭐️⭐️</td>
+<td style="text-align:right">1hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day18</td>
+<td style="text-align:left"><a href="./5-3,%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0activation.md">5-3,激活函数activation</a></td>
+<td style="text-align:right">⭐️⭐️⭐️</td>
+<td style="text-align:right">0.5hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day19</td>
+<td style="text-align:left"><a href="./5-4,%E6%A8%A1%E5%9E%8B%E5%B1%82layers.md">5-4,模型层layers</a></td>
+<td style="text-align:right">⭐️⭐️⭐️</td>
+<td style="text-align:right">1hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day20</td>
+<td style="text-align:left"><a href="./5-5,%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0losses.md">5-5,损失函数losses</a></td>
+<td style="text-align:right">⭐️⭐️⭐️</td>
+<td style="text-align:right">1hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day21</td>
+<td style="text-align:left"><a href="./5-6,%E8%AF%84%E4%BC%B0%E6%8C%87%E6%A0%87metrics.md">5-6,评估指标metrics</a></td>
+<td style="text-align:right">⭐️⭐️⭐️</td>
+<td style="text-align:right">1hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day22</td>
+<td style="text-align:left"><a href="./5-7,%E4%BC%98%E5%8C%96%E5%99%A8optimizers.md">5-7,优化器optimizers</a></td>
+<td style="text-align:right">⭐️⭐️⭐️</td>
+<td style="text-align:right">0.5hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day23</td>
+<td style="text-align:left"><a href="./5-8,%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0callbacks.md">5-8,回调函数callbacks</a></td>
+<td style="text-align:right">⭐️⭐️⭐️⭐️</td>
+<td style="text-align:right">1hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right"> </td>
+<td style="text-align:left"><a href="./%E5%85%AD%E3%80%81TensorFlow%E7%9A%84%E9%AB%98%E9%98%B6API.md"><strong>六、TensorFlow的高阶API</strong></a></td>
+<td style="text-align:right">⭐️</td>
+<td style="text-align:right">0hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day24</td>
+<td style="text-align:left"><a href="./6-1,%E6%9E%84%E5%BB%BA%E6%A8%A1%E5%9E%8B%E7%9A%843%E7%A7%8D%E6%96%B9%E6%B3%95.md">6-1,构建模型的3种方法</a></td>
+<td style="text-align:right">⭐️⭐️⭐️</td>
+<td style="text-align:right">1hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day25</td>
+<td style="text-align:left"><a href="./6-2,%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E7%9A%843%E7%A7%8D%E6%96%B9%E6%B3%95.md">6-2,训练模型的3种方法</a></td>
+<td style="text-align:right">⭐️⭐️⭐️⭐️</td>
+<td style="text-align:right">1hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day26</td>
+<td style="text-align:left"><a href="./6-3,%E4%BD%BF%E7%94%A8%E5%8D%95GPU%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B.md">6-3,使用单GPU训练模型</a></td>
+<td style="text-align:right">⭐️⭐️</td>
+<td style="text-align:right">0.5hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day27</td>
+<td style="text-align:left"><a href="./6-4,%E4%BD%BF%E7%94%A8%E5%A4%9AGPU%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B.md">6-4,使用多GPU训练模型</a></td>
+<td style="text-align:right">⭐️⭐️</td>
+<td style="text-align:right">0.5hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day28</td>
+<td style="text-align:left"><a href="./6-5,%E4%BD%BF%E7%94%A8TPU%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B.md">6-5,使用TPU训练模型</a></td>
+<td style="text-align:right">⭐️⭐️</td>
+<td style="text-align:right">0.5hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day29</td>
+<td style="text-align:left"><a href="./6-6,%E4%BD%BF%E7%94%A8tensorflow-serving%E9%83%A8%E7%BD%B2%E6%A8%A1%E5%9E%8B.md">6-6,使用tensorflow-serving部署模型</a></td>
+<td style="text-align:right">⭐️⭐️⭐️⭐️</td>
+<td style="text-align:right">1hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right">day30</td>
+<td style="text-align:left"><a href="./6-7,%E4%BD%BF%E7%94%A8spark-scala%E8%B0%83%E7%94%A8tensorflow%E6%A8%A1%E5%9E%8B.md">6-7,使用spark-scala调用tensorflow模型</a></td>
+<td style="text-align:right">⭐️⭐️⭐️⭐️⭐️</td>
+<td style="text-align:right">2hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+<tr>
+<td style="text-align:right"> </td>
+<td style="text-align:left"><a href="./%E5%90%8E%E8%AE%B0%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%90%83%E8%B4%A7%E5%92%8C%E4%B8%80%E9%81%93%E8%8F%9C%E7%9A%84%E6%95%85%E4%BA%8B.md">后记：一个吃货和一道菜的故事</a></td>
+<td style="text-align:right">⭐️</td>
+<td style="text-align:right">0hour</td>
+<td style="text-align:right">✅</td>
+</tr>
+</tbody>
+</table>
+<h2 id="step4-通过cnn-architectures项目复现常见cnn模型并阅读有关论文">Step4: 通过《CNN-Architectures》项目复现常见CNN模型，并阅读有关论文</h2>
+<p><strong>CNN-Architectures：</strong>  https://github.com/Machine-Learning-Tokyo/CNN-Architectures/tree/master/Implementations</p>
+<p>使用<code>tf.keras</code>API复现了一些常见CNN模型，包括：AlexNet、VGG、GoogLeNet、MobileNet、ResNet、Xception、SqueezeNet、DenseNet、ShuffleNet</p>
+<h2 id="step5-通过deep-models-for-nlp-beginners项目学习nlp基础知识">Step5: 通过《Deep Models for NLP beginners》项目学习NLP基础知识</h2>
+<p>Deep Models for NLP beginners：https://github.com/BrambleXu/nlp-beginner-guide-keras</p>
+<p>包括词向量、情感分类以及实体识别</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[知识点备忘]]></title>
         <id>https://sunyanhust.github.io/post/zhi-shi-dian-bei-wang-he-todo/</id>
@@ -1411,61 +1715,6 @@ pip install numpy==1.15.4
 
 python gpu_test.py
 </code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Keras指定显卡并限制显存使用（tensorflow后端）]]></title>
-        <id>https://sunyanhust.github.io/post/keras-zhi-ding-xian-qia-bing-xian-zhi-xian-cun-shi-yong-tensorflow-hou-duan/</id>
-        <link href="https://sunyanhust.github.io/post/keras-zhi-ding-xian-qia-bing-xian-zhi-xian-cun-shi-yong-tensorflow-hou-duan/">
-        </link>
-        <updated>2020-04-02T04:08:55.000Z</updated>
-        <content type="html"><![CDATA[<blockquote>
-<p>本文转载自<a href="https://zhuanlan.zhihu.com/p/65218239">知乎</a></p>
-</blockquote>
-<p>Keras使用显卡时是默认调用所有的GPU，并且占满所有显存的，所以就很有必要搞清楚Keras如何指定GPU和如何限制显存的使用比例了。</p>
-<h2 id="指定某块gpu">📒指定某块GPU</h2>
-<p>指定GPU很简单，在载入keras和tensorflow之前，设置CUDA计算使用的GPU序号即可。这其实是CUDA本身的参数，对所有深度学习框架都是适用的。需要注意的是最好写在<code>improt keres</code> 和 <code>import tensorflow</code>之前，不然可能出错。</p>
-<pre><code class="language-python">import os
-os.environ[&quot;CUDA_VISIBLE_DEVICES&quot;] = &quot;1&quot;
-</code></pre>
-<p>此代码选择的是编号为“1”的显卡。显卡的编号是从“0”开始的，若只有一块显卡则编号为“0”。</p>
-<h2 id="指定多块gpu">📒指定多块GPU</h2>
-<p>指定多块GPU的方式和前文完全一致，只需要多写几个编号即可：</p>
-<pre><code class="language-python">import os
-os.environ[&quot;CUDA_VISIBLE_DEVICES&quot;] =  &quot;0, 2&quot;
-</code></pre>
-<p>此时选择的是编号为“0”和编号为“2”的显卡</p>
-<h2 id="控制gpu显存使用比例">📒控制GPU显存使用比例</h2>
-<p>Keras是默认占满GPU显存的，我们通过重设backend的gpu_memory_fraction来进行调节，0.3表示占用30%的显存：</p>
-<pre><code class="language-python">import tensorflow as tf
-from keras.backend.tensorflow_backend import set_session
-config = tf.ConfigProto()
-config.gpu_options.per_process_gpu_memory_fraction = 0.3
-set_session(tf.Session(config=config))
-</code></pre>
-<p>不过虽然配置了GPU显存的占用比例，实际运行中若不够用的话还是获取更多的显存。比方说如果运行了3个设置为30%显存的应用，实际上是可能超过100%造成显存不足的。</p>
-<h2 id="指定gpu控制显存使用">📒指定GPU+控制显存使用</h2>
-<p>将指定GPU与控制显存使用比例合并操作即可：</p>
-<pre><code class="language-python">import os
-os.environ[&quot;CUDA_VISIBLE_DEVICES&quot;] = &quot;1&quot;
-import tensorflow as tf
-from keras.backend.tensorflow_backend import set_session
-config = tf.ConfigProto()
-config.gpu_options.per_process_gpu_memory_fraction = 0.3
-set_session(tf.Session(config=config))
-</code></pre>
-<p>该代码实现的是指定编号为“1”的GPU，并设置占用显存的比例为30%。</p>
-<h2 id="显存的按需分配动态增长">📒显存的按需分配（动态增长）</h2>
-<p>如果并不清楚自己的应用分配多少的显存比例合适，可以使用按需分配的方式，也就是动态增长allow_growth：</p>
-<pre><code class="language-python">import os
-os.environ[&quot;CUDA_VISIBLE_DEVICES&quot;] = &quot;1&quot;
-import tensorflow as tf
-from keras.backend.tensorflow_backend import set_session
-config = tf.ConfigProto()
-config.gpu_options.allow_growth = True
-set_session(tf.Session(config=config))
-</code></pre>
-<p>该代码实现的是指定编号为“1”的GPU，并设置占用显存的方式为按需增长。</p>
 ]]></content>
     </entry>
 </feed>
