@@ -1,0 +1,290 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LeetCode：最长公共前缀 | Gridea</title>
+<link rel="shortcut icon" href="https://sunyanhust.github.io/favicon.ico?v=1592201640656">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://sunyanhust.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="LeetCode：最长公共前缀 | Gridea - Atom Feed" href="https://sunyanhust.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="题目
+编写一个函数来查找字符串数组中的最长公共前缀。如果不存在公共前缀，返回空字符串 &quot;&quot;。
+示例 1:
+输入: [&quot;flower&quot;,&quot;flow&quot;,&quot;flight&quo..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://sunyanhust.github.io">
+  <img class="avatar" src="https://sunyanhust.github.io/images/avatar.png?v=1592201640656" alt="">
+  </a>
+  <h1 class="site-title">
+    Gridea
+  </h1>
+  <p class="site-description">
+    温故而知新
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/sunyanhust" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+        <a href="https://www.zhihu.com/people/sun-yan-90-29" target="_blank">
+          <i class="ri-zhihu-line"></i>
+        </a>
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              LeetCode：最长公共前缀
+            </h2>
+            <div class="post-info">
+              <span>
+                2020-06-15
+              </span>
+              <span>
+                4 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <h2 id="题目">题目</h2>
+<p>编写一个函数来查找字符串数组中的最长公共前缀。如果不存在公共前缀，返回空字符串 &quot;&quot;。</p>
+<p>示例 1:</p>
+<pre><code class="language-bash">输入: [&quot;flower&quot;,&quot;flow&quot;,&quot;flight&quot;]
+输出: &quot;fl&quot;
+</code></pre>
+<p>示例 2:</p>
+<pre><code class="language-bash">输入: [&quot;dog&quot;,&quot;racecar&quot;,&quot;car&quot;]
+输出: &quot;&quot;
+解释: 输入不存在公共前缀。
+</code></pre>
+<p>说明: 所有输入只包含小写字母 a-z 。</p>
+<p>来源：力扣（LeetCode） 链接：https://leetcode-cn.com/problems/longest-common-prefix</p>
+<h2 id="解法">解法</h2>
+<p>方法1和方法2比较常规，我自己解题的时候用的方法2。方法3利用字符串排序，非常巧妙。方法4是字典树，直觉上可以，但是我对字典树不是很熟悉。</p>
+<h3 id="横向扫描">横向扫描</h3>
+<p>依次遍历字符串数组中的每个字符串，对于每个遍历到的字符串，更新最长公共前缀，当遍历完所有的字符串以后，即可得到字符串数组中的最长公共前缀。<br>
+<img src="https://sunyanhust.github.io/post-images/1592200588023.png" alt="" loading="lazy"></p>
+<h3 id="纵向扫描">纵向扫描</h3>
+<p>纵向扫描时，从前往后遍历所有字符串的每一列，比较相同列上的字符是否相同，如果相同则继续对下一列进行比较，如果不相同则当前列不再属于公共前缀，当前列之前的部分为最长公共前缀。<br>
+<img src="https://sunyanhust.github.io/post-images/1592200615614.png" alt="" loading="lazy"><br>
+这种方法和我想的一致，贴一下我的代码：</p>
+<pre><code class="language-python">class Solution:
+    def longestCommonPrefix(self, strs: List[str]) -&gt; str:
+        cp = &quot;&quot;
+        if not strs:
+            return cp
+        min_str_len = min([len(s) for s in strs])
+        strs_num = len(strs)
+        for i in range(min_str_len):
+            temp = strs[0][i]
+            same = True
+            for j in range(strs_num):
+                if strs[j][i] != temp:
+                    same =False
+                    break
+            if same:
+                cp += temp
+            else:
+                return cp
+        return cp
+</code></pre>
+<p>在题解中还看到一种使用zip函数的便捷写法：</p>
+<pre><code class="language-python">class Solution(object):
+    def longestCommonPrefix(self, strs):
+        ans = ''
+        for i in zip(*strs):
+            if len(set(i)) == 1:
+                ans += i[0]
+            else:
+                break
+        return ans
+</code></pre>
+<p>利用python的zip函数，把str看成list然后把输入看成二维数组，左对齐纵向压缩，然后把每项利用集合去重，之后遍历list中找到元素长度大于1之前的就是公共前缀。</p>
+<h3 id="字符串排序">字符串排序</h3>
+<p>利用python的max()和min()，在python里字符串是可以比较的，按照ascII值排，举例abb， aba，abac，最大为abb，最小为aba。所以只需要比较最大最小的公共前缀就是整个数组的公共前缀。</p>
+<pre><code class="language-python">def longestCommonPrefix(self, strs):
+        if not strs: return &quot;&quot;
+        s1 = min(strs)
+        s2 = max(strs)
+        for i,x in enumerate(s1):
+            if x != s2[i]:
+                return s2[:i]
+        return s1
+</code></pre>
+<h3 id="字典树">字典树</h3>
+<p>暂时不明白，后续理解一下。</p>
+<pre><code class="language-python">from collections import defaultdict
+from functools import reduce
+class Solution:
+    def longestCommonPrefix(self, strs: List[str]) -&gt; str:
+        if not strs:return &quot;&quot;
+        trieNode = lambda:defaultdict(trieNode)
+        class Trie:
+            def __init__(self):
+                self.trie = trieNode()
+
+            def insert(self,word):
+                reduce(dict.__getitem__,word,self.trie)['END'] = True
+
+            def search(self,word):
+                reduce(lambda d,k:d[k] if k in d else trieNode(),word,self.trie).get('END',False)
+
+            def startsWith(self,word):
+                return len(reduce(lambda d,k:d[k] if k in d else trieNode(),word,self.trie)) &gt; 0
+
+            def longestCommonPrefix(self):
+                commonPrefixes = &quot;&quot;
+                starts = self.trie
+                while ('END' not in starts) and len(starts) == 1:
+                    append = list(starts.keys())[0]
+                    starts = starts.get(append)
+                    commonPrefixes += append
+                return commonPrefixes
+
+        trie = Trie()
+        for word in strs:
+            trie.insert(word)
+        return trie.longestCommonPrefix()
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E9%A2%98%E7%9B%AE">题目</a></li>
+<li><a href="#%E8%A7%A3%E6%B3%95">解法</a>
+<ul>
+<li><a href="#%E6%A8%AA%E5%90%91%E6%89%AB%E6%8F%8F">横向扫描</a></li>
+<li><a href="#%E7%BA%B5%E5%90%91%E6%89%AB%E6%8F%8F">纵向扫描</a></li>
+<li><a href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%8E%92%E5%BA%8F">字符串排序</a></li>
+<li><a href="#%E5%AD%97%E5%85%B8%E6%A0%91">字典树</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://sunyanhust.github.io/post/ru-he-ru-men-shen-du-xue-xi/">
+              <h3 class="post-title">
+                如何入门深度学习
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://sunyanhust.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>
