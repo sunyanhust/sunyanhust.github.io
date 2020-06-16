@@ -2,17 +2,17 @@
   <head>
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>文章汇总：融合BN加速推理、BERT推理加速实践、pytorch C++前端推理模型以及ReZero: 使用加权残差连接加速深度模型收敛 | Gridea</title>
+<title>经典深度学习论文回顾：LeNet | Gridea</title>
 <link rel="shortcut icon" href="https://sunyanhust.github.io/favicon.ico?v=1592325722928">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://sunyanhust.github.io/styles/main.css">
-<link rel="alternate" type="application/atom+xml" title="文章汇总：融合BN加速推理、BERT推理加速实践、pytorch C++前端推理模型以及ReZero: 使用加权残差连接加速深度模型收敛 | Gridea - Atom Feed" href="https://sunyanhust.github.io/atom.xml">
+<link rel="alternate" type="application/atom+xml" title="经典深度学习论文回顾：LeNet | Gridea - Atom Feed" href="https://sunyanhust.github.io/atom.xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
 
 
 
-    <meta name="description" content="📚融合BN加速推理
-批归一化（Batch Normalization）因其可以加速神经网络训练、使网络训练更稳定，而且还有一定的正则化效果，所以得到了非常广泛的应用。但是，在推理阶段，BN层一般是可以完全融合到前面的卷积层的，而且丝毫不影..." />
+    <meta name="description" content="论文
+论文：LeCun, Y., Bottou, L., Bengio, Y., &amp; Haffner, P. (1998). Gradient-based learning applied to document recogniti..." />
     <meta name="keywords" content="" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
     <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
@@ -83,49 +83,37 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              文章汇总：融合BN加速推理、BERT推理加速实践、pytorch C++前端推理模型以及ReZero: 使用加权残差连接加速深度模型收敛
+              经典深度学习论文回顾：LeNet
             </h2>
             <div class="post-info">
               <span>
-                2020-04-04
+                2020-06-15
               </span>
               <span>
-                2 min read
+                1 min read
               </span>
               
             </div>
             
             <div class="post-content-wrapper">
               <div class="post-content">
-                <h2 id="融合bn加速推理">📚融合BN加速推理</h2>
-<p>批归一化（Batch Normalization）因其可以加速神经网络训练、使网络训练更稳定，而且还有一定的正则化效果，所以得到了非常广泛的应用。但是，在推理阶段，BN层一般是可以完全融合到前面的卷积层的，而且丝毫不影响性能。<br>
-<strong>参考文章</strong>：<a href="https://zhuanlan.zhihu.com/p/120265831">深度学习推理时融合BN,轻松获得约5%的提速</a><br>
-<strong>代码</strong>：keras的暂时没有找到，有空可以写写</p>
-<h2 id="bert推理加速实践">📚BERT推理加速实践</h2>
-<p>主要基于Faster Transformer，<strong>参考文章</strong>：</p>
-<ol>
-<li><a href="https://zhuanlan.zhihu.com/p/89694963">BERT模型推理加速总结</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/91024786">BERT推理加速实践</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/73715272">NVIDIA BERT推理解决方案Faster Transformer开源啦</a></li>
-</ol>
-<h2 id="pytorch-c前端推理模型">📚pytorch C++前端推理模型</h2>
-<p>使用libtorch C++前端来推理复杂模型，可能会用到。<strong>参考文章</strong>：<a href="https://zhuanlan.zhihu.com/p/69421019">嫌python慢？来这里用pytorch C++前端推理模型</a></p>
-<h2 id="rezero-使用加权残差连接加速深度模型收敛">📚ReZero: 使用加权残差连接加速深度模型收敛</h2>
-<p><strong>论文标题</strong>：ReZero is All You Need: Fast Convergence at Large Depth</p>
-<p><strong>论文作者</strong>：Thomas Bachlechner, Bodhisattwa Prasad Majumder, Huanru Henry Mao, Garrison W. Cottrell, Julian McAuley</p>
-<p><strong>论文链接</strong>：https://arxiv.org/abs/2003.04887</p>
-<p><strong>代码链接</strong>：https://github.com/majumderb/rezero</p>
-<p>简单来说对残差进行了加权并初始化权重为0来加快网络收敛速度。思路比较清晰，可证明也work，具体参考文章<a href="https://zhuanlan.zhihu.com/p/113384612">ReZero: 使用加权残差连接加速深度模型收敛</a></p>
+                <h2 id="论文">论文</h2>
+<p>论文：LeCun, Y., Bottou, L., Bengio, Y., &amp; Haffner, P. (1998). Gradient-based learning applied to document recognition. Proceedings of the IEEE, 86(11), 2278-2324.</p>
+<h2 id="背景介绍">背景介绍</h2>
+<p>Yan LeCun等人于1998年第一次将卷积神经网络（LeNet）应用到图像分类任务上，在手写数字识别任务上取得了巨大成功。LeNet的网络结构，麻雀虽小，但五脏俱全，卷积层、pooling层、全连接层，这些都是现代CNN网络的基本组件。</p>
+<h2 id="模型结构">模型结构</h2>
+<figure data-type="image" tabindex="1"><img src="https://sunyanhust.github.io/post-images/1592204054863.jpg" alt="" loading="lazy"></figure>
+<h2 id="代码实现">代码实现</h2>
 
               </div>
               <div class="toc-container">
                 <ul class="markdownIt-TOC">
 <li>
 <ul>
-<li><a href="#%E8%9E%8D%E5%90%88bn%E5%8A%A0%E9%80%9F%E6%8E%A8%E7%90%86">📚融合BN加速推理</a></li>
-<li><a href="#bert%E6%8E%A8%E7%90%86%E5%8A%A0%E9%80%9F%E5%AE%9E%E8%B7%B5">📚BERT推理加速实践</a></li>
-<li><a href="#pytorch-c%E5%89%8D%E7%AB%AF%E6%8E%A8%E7%90%86%E6%A8%A1%E5%9E%8B">📚pytorch C++前端推理模型</a></li>
-<li><a href="#rezero-%E4%BD%BF%E7%94%A8%E5%8A%A0%E6%9D%83%E6%AE%8B%E5%B7%AE%E8%BF%9E%E6%8E%A5%E5%8A%A0%E9%80%9F%E6%B7%B1%E5%BA%A6%E6%A8%A1%E5%9E%8B%E6%94%B6%E6%95%9B">📚ReZero: 使用加权残差连接加速深度模型收敛</a></li>
+<li><a href="#%E8%AE%BA%E6%96%87">论文</a></li>
+<li><a href="#%E8%83%8C%E6%99%AF%E4%BB%8B%E7%BB%8D">背景介绍</a></li>
+<li><a href="#%E6%A8%A1%E5%9E%8B%E7%BB%93%E6%9E%84">模型结构</a></li>
+<li><a href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0">代码实现</a></li>
 </ul>
 </li>
 </ul>
@@ -138,9 +126,9 @@
         
           <div class="next-post">
             <div class="next">下一篇</div>
-            <a href="https://sunyanhust.github.io/post/xin-guan-bing-du-quan-qiu-da-liu-xing-wo-men-que-fa-de-zhi-shi-yi-miao/">
+            <a href="https://sunyanhust.github.io/post/leetcodezui-chang-gong-gong-qian-zhui/">
               <h3 class="post-title">
-                新冠病毒全球大流行：我们缺乏的只是疫苗？
+                LeetCode：最长公共前缀
               </h3>
             </a>
           </div>
